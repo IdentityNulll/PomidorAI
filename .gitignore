@@ -1,0 +1,35 @@
+# Runtime data: uploaded images, SQLite database, session signing key
+backend/data/
+
+# Built frontend, served by FastAPI in production
+backend/static/
+
+# Python
+__pycache__/
+*.py[cod]
+backend/venv/
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Playwright
+frontend/screenshots/
+frontend/test-results/
+frontend/playwright-report/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Local Claude Code permissions
+.claude/settings.local.json

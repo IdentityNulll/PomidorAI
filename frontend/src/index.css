@@ -1,0 +1,59 @@
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/inter/latin-ext-400.css';
+@import '@fontsource/inter/latin-ext-600.css';
+@import '@fontsource/inter/latin-ext-700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Never let a stray wide child scroll the whole page sideways. */
+    overflow-x: hidden;
+    /* Stop the pull-to-refresh / rubber-band bounce on the document. */
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    /* 16px floor everywhere: iOS Safari zooms on focus below it. */
+    @apply bg-ink-50 font-sans text-base text-ink-900 antialiased dark:bg-night-900 dark:text-ink-50;
+    overflow-x: hidden;
+  }
+
+  /* Form controls do not inherit font-size, so set it explicitly. */
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 1rem;
+    font-family: inherit;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
