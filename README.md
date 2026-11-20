@@ -124,46 +124,96 @@ Two models, each used only where it is actually good:
 
 | Model | Repo | Used for |
 | ----- | ---- | -------- |
-| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | species on whole-plant / fruit / field photos, and the "is this even a crop" and "is this a close-up leaf" gates |
+| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | frozen feature extractor, plus the "is this a close-up leaf" gate |
+| Species head | `app/vision/weights/species_head.npz` (trained here) | species on whole-plant / fruit / field photos, and rejecting non-crops |
 | PlantVillage ViT | `kimcomehome/plantvillage-vit-leaf-disease` | disease, and species on close-up leaves |
 
 ### Routing
 
-CLIP is zero-shot: it scores the photo against text prompts for the eight
-crops in `plants.json`, plus a set of **distractor** prompts ("a person", "a
-car", …). Without distractors a softmax over eight crops has nowhere else to
-put its mass, so a photo of a cat comes back as a confident crop. With them,
-the app reports it as unidentified.
+Species comes from a **linear head trained on real photographs** (see
+[Training the species head](#training-the-species-head)), blended with the
+older zero-shot prompts. Both score the photo against the eight crops in
+`plants.json` *plus* a **"not a crop" class**. That extra class matters: a
+softmax over eight crops has nowhere else to put its mass, so without it a
+photo of a cat comes back as a confident crop. With it, the app says
+unidentified.
 
 Then the photo is classified as leaf-like or not, because the disease model
 was trained on single leaves against plain backgrounds and is unreliable
 anywhere else:
 
-- **Not leaf-like** (whole plant, fruit, field) → CLIP decides the species.
+- **Not leaf-like** (whole plant, fruit, field) → the species head decides.
   Any disease output is capped below the UI's 0.50 threshold, so the app says
   "not sure" instead of diagnosing from a photo the model cannot read.
-- **Leaf-like** → the PlantVillage model decides the species, because CLIP is
-  weak at fine-grained leaf shapes (it reads most broad green leaves as
-  cotton). If neither model is confident, the result is reported as unsure
+- **Leaf-like** → the PlantVillage model decides the species, because CLIP
+  features are weak at fine-grained leaf shapes (most broad green leaves read
+  as cotton). If neither model is confident, the result is reported as unsure
   rather than guessed.
 
 Health predictions are never more confident than the species they assume.
 
 ### Measured accuracy
 
-On nine Wikimedia Commons photos (six whole-plant/fruit, three diseased
-leaves):
+Species identification, on **280 held-out images** the trained head never
+saw (9 classes: the eight crops plus "not a crop"). Images are degraded to
+each size and re-compressed, imitating a phone upload over slow mobile data:
 
-| Outcome | Count |
-| ------- | ----- |
-| Correct and confident | 6 |
-| Honestly reported as unsure | 2 |
-| Confidently wrong | 1 |
+| resolution | zero-shot prompts | trained head | production (blended) |
+| ---------- | ----------------- | ------------ | -------------------- |
+| full       | 66.4%             | 78.2%        | **79.3%**            |
+| 640 px     | 67.1%             | 78.9%        | **78.9%**            |
+| 320 px     | 66.4%             | 80.0%        | **78.9%**            |
+| 160 px     | 62.5%             | 73.9%        | **73.2%**            |
+| 96 px      | 53.6%             | 64.6%        | **62.9%**            |
 
-The one hard failure is a **potato leaf identified as tomato**. Potato and
-tomato late blight are the same pathogen (*Phytophthora infestans*) on
-similar leaves of the same family; the disease answer stays correct. This is
-a known limit, not a bug to be tuned away.
+Two things worth reading off this table:
+
+- **Low resolution barely matters until it is extreme.** 320 px scores the
+  same as full resolution, and 160 px (73.2%) still beats the old zero-shot
+  prompts at *full* resolution (66.4%). CLIP resizes everything to 224x224
+  anyway, so there is little left to lose until the image drops below that.
+- **The blend only clearly helps at full resolution.** Below it, head-only is
+  within a point or two either way. At n=280 that is inside the noise
+  (standard error ~2.4 points), so do not read the 320/160 rows as the blend
+  hurting. It is kept because it fixes a real failure mode (below).
+
+Per-class recall, because a single average hides a lot:
+
+| class | recall | | class | recall |
+| ----- | ------ | - | ----- | ------ |
+| wheat | 90.0% | | apple | 74.1% |
+| not-a-crop | 87.5% | | grape | 73.1% |
+| cotton | 82.8% | | apricot | 72.2% |
+| pomegranate | 81.8% | | potato | 58.3% |
+| tomato | 74.1% | | | |
+
+Potato is the weakest class and is mostly lost to cotton. Apple and apricot
+trade with each other, which is unsurprising for two similar orchard trees.
+
+### Why the head is blended with the prompts
+
+The two methods fail differently, so `identify()` combines them with a
+geometric blend (`BLEND_ALPHA = 0.75`, favouring the head).
+
+The head alone read a perfectly ordinary whole-plant tomato photo as
+"not a crop" at 0.70, where the prompts had it at 0.99. Blended, it comes
+back as tomato and the app shows a name again.
+
+The blend weight was chosen on one half of the held-out split and confirmed
+on the other half, which had no part in choosing it: **0.793 blended vs
+0.779 head-only vs 0.657 zero-shot**. Tuning a hyperparameter on the same
+data you then quote is how a benchmark ends up lying.
+
+### An earlier benchmark that turned out to be contaminated
+
+An earlier nine-photo end-to-end check is no longer an accuracy claim: three
+of those photos (potato, wheat, cat) were pulled into the training set by
+`fetch_dataset.py`, which searches Commons with overlapping terms. Verified
+by comparing the URL hashes the fetcher names files with, not by assuming.
+
+On the six genuinely held-out photos the full pipeline gives 4 correct, 1
+unsure, 1 wrong. Treat that run as a smoke test of the routing; the 280-image
+split above is the real number.
 
 ### What it cannot do
 
@@ -178,6 +228,37 @@ a known limit, not a bug to be tuned away.
 - PlantVillage models are known to degrade on real field photography compared
   to their training set. Treat output as a prompt to look closer, which is
   exactly what the app's permanent disclaimer says.
+
+### Training the species head
+
+Species identification does not rely on hand-written prompts any more. A
+**linear probe** over frozen CLIP features is trained on real photographs:
+
+```bash
+python backend/scripts/fetch_dataset.py --per-class 260   # ~1400 CC images from Wikimedia Commons
+python backend/scripts/train_head.py                      # minutes on CPU
+python backend/scripts/evaluate_head.py                   # accuracy vs zero-shot, by resolution
+```
+
+CLIP stays frozen; only a softmax layer on top of its embeddings is fitted.
+That is why this trains on a laptop CPU in minutes instead of needing a GPU
+for days — and why ~1400 images is enough, where training a network from
+scratch would need orders of magnitude more.
+
+The dataset lands in `backend/data/dataset/` (gitignored). The trained head is
+`backend/app/vision/weights/species_head.npz`, a few hundred KB, and **is**
+committed so a fresh checkout works without retraining. If the file is absent
+the app silently falls back to the old zero-shot prompts.
+
+**Low resolution is trained for, not hoped for.** Every training image is also
+embedded at 640 px, 320 px and 160 px with JPEG quality dropped to match, so
+the head learns the degraded features a phone photo actually arrives with over
+slow mobile data. `evaluate_head.py` reports accuracy per resolution.
+
+The negative class matters as much as the crops: it contains other plants and
+crops (maize, sunflower, cucumber, pepper, roses, oaks) and not just obviously
+non-plant photos, so the model learns to reject *a plant that is not one of
+our eight* rather than merely rejecting cats.
 
 ### Swapping in different models
 

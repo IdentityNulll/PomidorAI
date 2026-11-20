@@ -57,6 +57,31 @@ def test_analyze_returns_the_contract_on_a_real_image(tmp_path):
     assert 1 <= len(result["health"]["predictions"]) <= 3
 
 
+def test_analyze_works_off_the_thread_that_loaded_the_models(tmp_path):
+    """Regression: grad mode is thread-local in PyTorch.
+
+    The models are loaded during app startup, but requests are served from
+    other threadpool threads. Disabling grad globally at load time only
+    covered the loading thread, so every real scan raised
+    "Can't call numpy() on Tensor that requires grad" - while passing every
+    single-threaded test and CLI run.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
+    from app.analyzer import analyze
+    from app.vision.models import load
+
+    load()  # load here, so the worker below is a different thread
+
+    path = tmp_path / "scan.jpg"
+    Image.new("RGB", (400, 300), (60, 130, 70)).save(path)
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        result = pool.submit(analyze, str(path)).result()
+
+    assert set(result) == {"plant", "health", "info"}
+
+
 def test_noise_is_not_confidently_called_a_crop(tmp_path):
     """A photo that is not a crop must not come back with a confident name."""
     import random

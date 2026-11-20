@@ -50,7 +50,10 @@ def read_leaf(image: Image) -> LeafReading:
     bundle = load()
     torch = bundle.torch
 
-    logits = bundle.disease(**bundle.disease_processor(images=image, return_tensors="pt")).logits[0]
+    with torch.no_grad():
+        logits = bundle.disease(
+            **bundle.disease_processor(images=image, return_tensors="pt")
+        ).logits[0]
     probabilities = torch.softmax(logits, dim=0)
 
     mass: dict[str, float] = defaultdict(float)
@@ -100,7 +103,8 @@ def clip_fallback(image: Image, plant_id: str) -> list[dict]:
             owners.append(label)
 
     inputs = bundle.clip_processor(text=texts, images=image, return_tensors="pt", padding=True)
-    logits = bundle.clip(**inputs).logits_per_image[0]
+    with torch.no_grad():
+        logits = bundle.clip(**inputs).logits_per_image[0]
 
     pooled: dict[str, object] = {}
     for owner, logit in zip(owners, logits):

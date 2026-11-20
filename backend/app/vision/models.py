@@ -62,7 +62,11 @@ def load() -> Bundle:
                 "pip install -r backend/requirements.txt"
             ) from exc
 
-        torch.set_grad_enabled(False)
+        # NB: torch.set_grad_enabled is thread-local, so setting it here would
+        # only cover the thread that happened to load the models - requests
+        # served from other threadpool threads would still build a graph and
+        # then fail on .numpy(). Inference sites use torch.no_grad() instead.
+        #
         # One thread per core is counterproductive for these small models and
         # makes latency worse under concurrent requests.
         torch.set_num_threads(max(1, (os.cpu_count() or 4) // 2))
