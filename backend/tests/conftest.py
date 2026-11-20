@@ -12,6 +12,50 @@ from app import db, images, session as sess
 from app.main import app
 
 
+@pytest.fixture(autouse=True)
+def skip_model_warmup(monkeypatch):
+    """The TestClient runs lifespan; do not let it preload the models."""
+    monkeypatch.setattr("app.main.vision_models.warm", lambda: None)
+
+
+STUB_RESULT = {
+    "plant": {
+        "id": "tomato",
+        "commonName": "Pomidor",
+        "scientificName": "Solanum lycopersicum",
+        "confidence": 0.91,
+    },
+    "health": {
+        "predictions": [
+            {"label": "Sog'lom", "confidence": 0.78},
+            {"label": "Fitoftoroz (kech kuyish)", "confidence": 0.14},
+        ]
+    },
+    "info": {
+        "description": "Pomidor haqida qisqa ma'lumot.",
+        "howItGrows": "Ko'chatdan o'stiriladi.",
+        "water": "Haftada 2-3 marta.",
+        "sunlight": "To'liq quyosh.",
+        "soil": "Yengil tuproq.",
+        "season": "Mart - Sentabr",
+        "commonDiseases": ["Fitoftoroz"],
+        "careTips": ["Pastki barglarni olib tashlang."],
+    },
+}
+
+
+@pytest.fixture(autouse=True)
+def stub_analyzer(monkeypatch):
+    """Keep API tests off the real models.
+
+    These tests cover routing, sessions, storage and permissions - loading a
+    gigabyte of weights to assert on them would be slow and would make the
+    assertions depend on model output. The real models are covered in
+    test_analyzer.py.
+    """
+    monkeypatch.setattr("app.main.analyze", lambda _path: STUB_RESULT)
+
+
 @pytest.fixture
 def uploads(tmp_path, monkeypatch):
     """Redirect uploads to a temp directory."""

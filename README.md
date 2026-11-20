@@ -4,10 +4,10 @@ Mobile-first web app for identifying crops and garden plants from a photo and
 flagging whether they look diseased. Built for farmers and gardeners in
 Uzbekistan; the entire UI is in Uzbek (Latin script).
 
-**The AI is a mock.** Plant identification and disease detection are not
-implemented yet — `backend/app/analyzer.py` returns randomised placeholder
-results. Everything around it (upload, validation, storage, history, UI) is
-real and finished. See [Replacing the mock](#replacing-the-mock-with-real-models).
+Identification and disease detection run on **real models, locally on CPU** —
+no GPU, no external API, nothing leaves the machine. Read
+[How the analysis works](#how-the-analysis-works) before trusting it: the
+accuracy limits are real and specific.
 
 ---
 
@@ -16,16 +16,20 @@ real and finished. See [Replacing the mock](#replacing-the-mock-with-real-models
 | Layer    | Choice                                                                   |
 | -------- | ------------------------------------------------------------------------ |
 | Backend  | Python, FastAPI, SQLite (SQLAlchemy), Pillow                             |
+| Vision   | PyTorch (CPU) + transformers: CLIP for species, a PlantVillage ViT for disease |
 | Frontend | React 18 + Vite + TypeScript, Tailwind CSS, lucide-react, self-hosted Inter |
 | Tests    | pytest (backend), Playwright (mobile UI)                                 |
 
 Everything runs locally and offline. There are no external API calls and no CDN
 assets — the Inter font ships from `@fontsource` and is bundled at build time.
+The model weights are downloaded once, then cached; after that you can set
+`HF_HUB_OFFLINE=1` and the app still works.
 
 ## Requirements
 
 - Python 3.10+
 - Node.js 18+
+- ~1 GB disk for the model weights, ~2 GB RAM while running
 
 ## Running
 
@@ -53,6 +57,13 @@ so a phone on the same Wi-Fi can open `http://<your-ip>:8000`.
 
 ```bash
 cd backend && ./venv/bin/python -m pytest
+```
+
+The default suite stubs the models so it runs in about a second. To exercise
+the real weights:
+
+```bash
+cd backend && POMIDORAI_MODEL_TESTS=1 ./venv/bin/python -m pytest tests/test_models.py
 ```
 
 ```bash
@@ -103,18 +114,75 @@ explicitly in production** — losing the key invalidates every existing session
 - File reads are resolved against `backend/data/uploads/` and refuse anything
   outside it.
 
-## Replacing the mock with real models
+## How the analysis works
 
-Edit **`backend/app/analyzer.py`** and nothing else.
+All analysis still goes through one function — `analyze(image_path)` in
+**`backend/app/analyzer.py`** — which is the only thing `main.py` calls. The
+models live in `backend/app/vision/`.
 
-It exposes exactly one function:
+Two models, each used only where it is actually good:
 
-```python
-def analyze(image_path: str) -> dict
-```
+| Model | Repo | Used for |
+| ----- | ---- | -------- |
+| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | species on whole-plant / fruit / field photos, and the "is this even a crop" and "is this a close-up leaf" gates |
+| PlantVillage ViT | `kimcomehome/plantvillage-vit-leaf-disease` | disease, and species on close-up leaves |
 
-`image_path` is an absolute path to a normalised JPEG (RGB, ≤1280 px, EXIF
-already stripped). Return this shape:
+### Routing
+
+CLIP is zero-shot: it scores the photo against text prompts for the eight
+crops in `plants.json`, plus a set of **distractor** prompts ("a person", "a
+car", …). Without distractors a softmax over eight crops has nowhere else to
+put its mass, so a photo of a cat comes back as a confident crop. With them,
+the app reports it as unidentified.
+
+Then the photo is classified as leaf-like or not, because the disease model
+was trained on single leaves against plain backgrounds and is unreliable
+anywhere else:
+
+- **Not leaf-like** (whole plant, fruit, field) → CLIP decides the species.
+  Any disease output is capped below the UI's 0.50 threshold, so the app says
+  "not sure" instead of diagnosing from a photo the model cannot read.
+- **Leaf-like** → the PlantVillage model decides the species, because CLIP is
+  weak at fine-grained leaf shapes (it reads most broad green leaves as
+  cotton). If neither model is confident, the result is reported as unsure
+  rather than guessed.
+
+Health predictions are never more confident than the species they assume.
+
+### Measured accuracy
+
+On nine Wikimedia Commons photos (six whole-plant/fruit, three diseased
+leaves):
+
+| Outcome | Count |
+| ------- | ----- |
+| Correct and confident | 6 |
+| Honestly reported as unsure | 2 |
+| Confidently wrong | 1 |
+
+The one hard failure is a **potato leaf identified as tomato**. Potato and
+tomato late blight are the same pathogen (*Phytophthora infestans*) on
+similar leaves of the same family; the disease answer stays correct. This is
+a known limit, not a bug to be tuned away.
+
+### What it cannot do
+
+- **Only the four crops tomato, potato, apple and grape get real disease
+  detection.** Cotton, wheat, pomegranate and apricot fall back to a CLIP
+  healthy-vs-diseased prompt comparison, which is a weak signal and is
+  deliberately capped into the "unsure" band.
+- Disease detection needs a **close-up of a single leaf**. Field and
+  whole-plant shots will not produce a diagnosis by design.
+- The eight crops are a closed set. Anything else should come back
+  unidentified — that is what the distractors are for.
+- PlantVillage models are known to degrade on real field photography compared
+  to their training set. Treat output as a prompt to look closer, which is
+  exactly what the app's permanent disclaimer says.
+
+### Swapping in different models
+
+The seam is unchanged. `analyze()` takes an absolute path to a normalised JPEG
+(RGB, ≤1280 px, EXIF stripped) and returns:
 
 ```python
 {
@@ -128,24 +196,24 @@ already stripped). Return this shape:
 }
 ```
 
-Notes for whoever wires up the real models:
-
-- Confidences are **0.0–1.0 and must be calibrated probabilities**, not raw
-  logits. The UI hides the plant name and shows "Ishonchim komil emas…" below
-  **0.50**, and applies the same rule to the health result.
+- Confidences must be **calibrated probabilities in 0.0–1.0**, not logits. The
+  UI hides the plant name and shows "Ishonchim komil emas…" below **0.50** and
+  applies the same rule to health.
+- `plant.id` must match an id in `plants.json`; `info` is looked up from there.
 - `health.predictions` should include a healthy class labelled `Sog'lom`.
-- The call is synchronous and runs inside the request. If inference gets slow,
-  move it to a worker — the API contract does not need to change.
-- `info` is reference content keyed to the predicted plant. Today it is read
-  from `backend/app/data/plants.json`.
+- Point at different weights without touching code via `POMIDORAI_CLIP_MODEL`
+  and `POMIDORAI_DISEASE_MODEL`.
+- Inference runs in a threadpool (`run_in_threadpool`) so it does not block the
+  event loop. If it gets much slower, move it to a worker — the API contract
+  does not change.
 
 ### ⚠️ Placeholder content
 
 `backend/app/data/plants.json` holds 8 plants (tomato, cotton, grape, apple,
 wheat, pomegranate, apricot, potato). **All of its Uzbek text is
-machine-written and has not been reviewed by an agronomist.** It must be
-verified before the app gives real advice — see
-`backend/app/data/README.md`.
+machine-written and has not been reviewed by an agronomist**, and so are the
+Uzbek disease names in `backend/app/vision/labels.py`. Both must be verified
+before the app gives real advice — see `backend/app/data/README.md`.
 
 ## API
 
@@ -232,7 +300,12 @@ pomidorAI/
 │   ├── requirements.txt
 │   ├── app/
 │   │   ├── main.py            # routes
-│   │   ├── analyzer.py        # THE MOCK - the only file to change for real models
+│   │   ├── analyzer.py        # THE SEAM - routing between the two models
+│   │   ├── vision/            # the models themselves
+│   │   │   ├── models.py      # lazy, cached loading
+│   │   │   ├── species.py     # CLIP zero-shot + leaf / distractor gates
+│   │   │   ├── disease.py     # PlantVillage ViT + weak CLIP fallback
+│   │   │   └── labels.py      # prompts and English -> Uzbek disease names
 │   │   ├── images.py          # upload validation, resize, EXIF strip
 │   │   ├── session.py         # signed anonymous session cookie
 │   │   ├── db.py              # SQLAlchemy engine + Scan model
@@ -240,6 +313,7 @@ pomidorAI/
 │   │   └── data/
 │   │       ├── plants.json    # placeholder content - needs agronomist review
 │   │       └── README.md
+│   ├── scripts/fetch_models.py  # one-time weight download
 │   ├── tests/
 │   └── data/                  # gitignored: uploads/, pomidorai.db, secret.key
 └── frontend/

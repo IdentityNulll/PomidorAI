@@ -11,7 +11,12 @@ if [ ! -x "$VENV/bin/python" ]; then
   python3 -m venv "$VENV"
 fi
 echo "==> Installing backend dependencies"
+# torch from the CPU index: the default PyPI wheel drags in ~2.5 GB of CUDA.
+"$VENV/bin/pip" install -q --index-url https://download.pytorch.org/whl/cpu torch torchvision
 "$VENV/bin/pip" install -q -r backend/requirements.txt
+
+echo "==> Checking vision model weights (first run downloads ~1 GB)"
+"$VENV/bin/python" backend/scripts/fetch_models.py
 
 if [ ! -d frontend/node_modules ]; then
   echo "==> Installing frontend dependencies"

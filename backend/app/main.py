@@ -2,11 +2,13 @@
 
 import base64
 import json
+import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import and_, or_
@@ -14,7 +16,10 @@ from sqlalchemy.orm import Session
 
 from . import db, models, session as sess
 from .analyzer import analyze
-from .images import ERR_DECODE, remove_files, resolve_owned_file, save_upload
+from .images import remove_files, resolve_owned_file, save_upload
+from .vision import models as vision_models
+
+logger = logging.getLogger(__name__)
 
 HISTORY_LIMIT = 200
 STATIC_DIR = Path(__file__).parent.parent / "static"
@@ -24,6 +29,9 @@ NOT_FOUND = "Topilmadi"
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     db.init_db()
+    # Load the vision models up front so the first scan is not slowed by a
+    # cold start. Failure here is logged, not fatal.
+    await run_in_threadpool(vision_models.warm)
     yield
 
 
@@ -89,8 +97,11 @@ async def analyze_endpoint(
     image_path, thumb_path = await save_upload(image)
 
     try:
-        result = analyze(str(image_path))
+        # Inference is CPU-bound and synchronous; keep it off the event loop
+        # so one scan does not stall every other request.
+        result = await run_in_threadpool(analyze, str(image_path))
     except Exception:
+        logger.exception("analysis failed")
         remove_files(str(image_path), str(thumb_path))
         raise HTTPException(status_code=500, detail="Tahlil qilib bo'lmadi")
 
