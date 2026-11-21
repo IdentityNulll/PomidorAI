@@ -133,6 +133,12 @@ PLANT_PROMPTS = [
     "a flower or flowering plant",
     "a crop growing in a field or garden",
     "grass or weeds",
+    # Harvested produce is plant material too. Without these a market stall
+    # of peppers was rejected outright as "a building or street", because
+    # the stall and the shoppers behind it matched better than "a plant".
+    "harvested fruit or vegetables",
+    "produce on a market stall",
+    "fruit or vegetables in a basket, crate or pile",
 ]
 
 NOT_PLANT_PROMPTS = [
@@ -176,3 +182,87 @@ HEALTH_PROMPTS = {
         "a {plant} plant with yellowing wilting damaged leaves",
     ],
 }
+
+
+# --- What kind of photo is this? -------------------------------------------
+#
+# People photograph the hosil (the harvest) at least as often as the growing
+# plant. The species model is trained on PlantCLEF - plants in the ground -
+# and scored 0/7 on harvested produce, calling grapes "Lemna gibba"
+# (duckweed) and potatoes "Salvinia molesta" (an aquatic fern). CLIP with
+# produce prompts scored 7/7 on the same photos. So the pipeline first asks
+# which kind of photo it has, then sends it to whichever model is competent.
+
+VIEW_HARVEST = "hosil"
+VIEW_PLANT = "o'simlik"
+VIEW_LEAF = "barg"
+
+VIEW_PROMPTS = {
+    # The distinction that matters is DETACHED vs STILL GROWING, not
+    # "is there fruit in the picture". A pepper plant with peppers on it is
+    # a plant; peppers in a crate are hosil. Getting this wrong sent photos
+    # of a growing pepper bush down the produce path and called them quince.
+    VIEW_HARVEST: [
+        "picked fruit in a basket or a crate",
+        "vegetables laid out on a table or a plate",
+        "produce for sale on a market stall",
+        "a pile of harvested produce, separated from the plant",
+        "cut or sliced fruit on a kitchen surface",
+        "fruit and vegetables indoors, with no plant or soil around them",
+    ],
+    VIEW_PLANT: [
+        "a plant growing in the ground",
+        "fruit still growing on a tree, vine or bush",
+        "a crop growing in a field",
+        "a tree or shrub outdoors with branches and soil",
+        "a flowering plant in a garden",
+        "a plant in a pot",
+        "a bare or autumn tree branch with leaves",
+    ],
+    VIEW_LEAF: [
+        "a close-up of a single plant leaf",
+        "plant leaves filling the frame",
+        "a leaf held in a hand",
+    ],
+}
+
+# Produce prompts per plants.json id. Only crops whose harvest someone would
+# plausibly photograph; ornamentals and leafy herbs are deliberately absent,
+# so they fall through to the plant model instead of being forced into a
+# produce class.
+PRODUCE_PROMPTS = {
+    "tomato": ["ripe red tomatoes", "a pile of fresh tomatoes"],
+    "pepper": ["bell peppers", "a pile of red and green peppers"],
+    "pomegranate": ["pomegranate fruits", "a cut open pomegranate"],
+    "apple": ["apples in a basket", "a pile of fresh apples"],
+    "grape": ["bunches of grapes", "harvested grapes in a crate"],
+    "potato": [
+        "a pile of raw brown potato tubers",
+        "harvested potatoes with soil on them",
+    ],
+    "quince": ["quince fruits", "a ripe yellow quince"],
+    "carrot": ["a bunch of carrots", "harvested orange carrots"],
+    "onion": ["a pile of onions", "dry onion bulbs"],
+    "cucumber": ["fresh cucumbers", "a pile of green cucumbers"],
+    "beet": ["beetroots", "harvested red beets"],
+    "apricot": ["apricot fruits", "a bowl of fresh apricots"],
+    "wheat": ["wheat grain", "a pile of wheat grains"],
+    "maize": [
+        "yellow corn on the cob",
+        "maize cobs with rows of yellow kernels",
+    ],
+    "cotton": ["harvested raw cotton", "a pile of cotton bolls"],
+    "cherry": ["fresh cherries", "a bowl of red cherries"],
+    "peach": ["fresh peaches", "a pile of peaches"],
+    "strawberry": ["fresh strawberries", "a punnet of strawberries"],
+}
+
+# Produce is a closed set too, and softmax must pick something: without these
+# a crate of bananas becomes a confident "Olma". Same lesson as the plant
+# gate - give the model somewhere else to put the probability mass.
+PRODUCE_OTHER = "__other_produce__"
+PRODUCE_PROMPTS[PRODUCE_OTHER] = [
+    "bananas", "citrus fruit", "melons or watermelon", "aubergines",
+    "cabbage or lettuce", "beans or peas", "nuts", "berries in a punnet",
+    "bread or baked goods", "meat or fish", "a cooked meal",
+]

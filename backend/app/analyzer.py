@@ -6,10 +6,17 @@ it runs locally on CPU - nothing is sent anywhere.
 
 Three models, each doing only what it is good at:
 
-  * PlantNet (PlantCLEF 2024, 7806 species) decides WHAT the plant is. It
-    replaced an eight-crop classifier that could only ever answer with one of
-    eight crops, so a pepper plant or a coriander patch came back as a
-    confident wrong crop.
+  * A view classifier decides what KIND of photo this is first - harvested
+    produce (hosil), a growing plant, or a close-up leaf - because the models
+    below are each competent at only some of those.
+
+  * PlantNet (PlantCLEF 2024, 7806 species) names plants growing in the
+    ground. It is trained on exactly that and is very good at it, and
+    correspondingly hopeless on harvested produce: 0/7 in testing, calling a
+    crate of grapes "Lemna gibba" (duckweed).
+
+  * CLIP compared against produce prompts names the hosil - 7/7 on those
+    same photos, mostly at 1.00.
 
   * CLIP answers two yes/no questions the species model cannot: "is this a
     plant at all?" (otherwise a photo of a car returns a confident species)
@@ -39,6 +46,7 @@ from .vision import names
 from .vision import plantnet
 from .vision import thresholds
 from .vision import gates as clip_gate
+from .vision import harvest
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +63,8 @@ CROP_MASS_REQUIRED = 0.60
 PLANTNET_TRUSTED = 0.35
 # Below this the photo probably is not a plant at all.
 PLANT_REQUIRED = 0.35
+# How sure the view classifier must be before the produce path is taken.
+VIEW_REQUIRED = 0.40
 
 EMPTY_INFO = {
     "description": "", "howItGrows": "", "water": "", "sunlight": "",
@@ -84,21 +94,35 @@ def analyze(image_path: str) -> dict:
         logger.info("not a plant")
         return _unidentified()
 
-    ranked = plantnet.identify(image)
-    scientific, confidence = ranked[0]
-    leafy = clip_gate.leafiness(image)
-    is_leaf = leafy >= LEAF_REQUIRED
+    view, view_confidence = harvest.classify_view(image)
 
-    reading = None
-    if is_leaf:
-        reading = disease_model.read_leaf(image)
-        scientific, confidence = _refine_with_leaf(reading, scientific, confidence)
+    if view == harvest.VIEW_HARVEST and view_confidence >= VIEW_REQUIRED:
+        # Harvested produce: PlantNet has never seen this and will answer
+        # with a wetland species. Ask CLIP which crop's hosil it is.
+        produce_id, confidence = harvest.identify_produce(image)[0]
+        curated = names.by_plant_id(produce_id)
+        if produce_id == harvest.PRODUCE_OTHER or not curated:
+            logger.info("produce, but not one of our crops")
+            return _unidentified()
+        scientific = curated["scientificName"]
+        leafy, is_leaf, reading = 0.0, False, None
+    else:
+        ranked = plantnet.identify(image)
+        scientific, confidence = ranked[0]
+        leafy = clip_gate.leafiness(image)
+        is_leaf = leafy >= LEAF_REQUIRED
+
+        reading = None
+        if is_leaf:
+            reading = disease_model.read_leaf(image)
+            scientific, confidence = _refine_with_leaf(reading, scientific, confidence)
 
     plant_id, common, info = _resolve(scientific)
     predictions = _assess(image, plant_id, confidence, reading, is_leaf, scientific)
 
-    logger.info("identified %s (%.2f) leafy=%.2f", scientific, confidence, leafy)
+    logger.info("view=%s %s (%.2f) leafy=%.2f", view, scientific, confidence, leafy)
     return {
+        "view": view,
         "plant": {
             "id": plant_id,
             "commonName": common,
@@ -183,6 +207,7 @@ def _unidentified() -> dict:
     "Ishonchim komil emas" for both the plant and the health section.
     """
     return {
+        "view": "",
         "plant": {"id": "unknown", "commonName": "", "scientificName": "", "confidence": 0.0},
         "health": {"predictions": [{"label": disease_model.HEALTHY, "confidence": 0.0}]},
         "info": dict(EMPTY_INFO),

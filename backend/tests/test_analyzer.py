@@ -12,6 +12,7 @@ from app.vision import disease as disease_model
 from app.vision import names
 from app.vision import plantnet
 from app.vision import gates as clip_gate
+from app.vision import harvest
 
 
 @pytest.fixture
@@ -24,6 +25,8 @@ def fake_models(monkeypatch, tmp_path):
 
     state = {
         "plantness": 0.9,
+        "view": (harvest.VIEW_PLANT, 0.9),
+        "produce": [("tomato", 0.9)],
         "species": [("Solanum lycopersicum", 0.9)],
         "leafy": 0.0,
         "crop": ("tomato", 0.9),
@@ -39,6 +42,8 @@ def fake_models(monkeypatch, tmp_path):
                         lambda _i: [("plant", state["plantness"]),
                                     ("not_plant", 1 - state["plantness"])])
     monkeypatch.setattr(clip_gate, "leafiness", lambda _i: state["leafy"])
+    monkeypatch.setattr(harvest, "classify_view", lambda _i: state["view"])
+    monkeypatch.setattr(harvest, "identify_produce", lambda _i: state["produce"])
     monkeypatch.setattr(plantnet, "identify", lambda _i, top=5: state["species"])
     monkeypatch.setattr(disease_model, "read_leaf", lambda _i: Reading())
     monkeypatch.setattr(disease_model, "from_reading", lambda _r, _p: state["diseases"])
@@ -171,7 +176,7 @@ def test_result_matches_the_api_contract(fake_models):
 
     result = analyzer.analyze(path)
 
-    assert set(result) == {"plant", "health", "info"}
+    assert set(result) == {"view", "plant", "health", "info"}
     assert set(result["plant"]) == {"id", "commonName", "scientificName", "confidence"}
     assert set(result["info"]) == set(analyzer.EMPTY_INFO)
     assert isinstance(result["info"]["careTips"], list)
@@ -187,3 +192,55 @@ def test_every_curated_crop_resolves(fake_models):
         state["species"] = [(scientific, 0.9)]
         state["leafy"] = 0.0
         assert analyzer.analyze(path)["plant"]["commonName"] == entry["commonName"]
+
+
+def test_harvested_produce_uses_clip_not_plantnet(fake_models):
+    """The hosil case.
+
+    PlantNet is trained on plants in the ground and scored 0/7 on harvested
+    produce, answering "Lemna gibba" for a crate of grapes. A produce photo
+    must never reach it.
+    """
+    state, path = fake_models
+    state["view"] = (harvest.VIEW_HARVEST, 0.8)
+    state["produce"] = [("grape", 0.97)]
+    state["species"] = [("Lemna gibba", 0.11)]  # what PlantNet would say
+
+    result = analyzer.analyze(path)
+
+    assert result["view"] == harvest.VIEW_HARVEST
+    assert result["plant"]["commonName"] == "Uzum"
+    assert result["plant"]["confidence"] == 0.97
+
+
+def test_produce_outside_our_crops_is_not_forced_into_one(fake_models):
+    """Softmax must pick something, so bananas need somewhere to go."""
+    state, path = fake_models
+    state["view"] = (harvest.VIEW_HARVEST, 0.9)
+    state["produce"] = [(harvest.PRODUCE_OTHER, 0.8), ("apple", 0.1)]
+
+    result = analyzer.analyze(path)
+
+    assert result["plant"]["commonName"] == ""
+    assert result["plant"]["confidence"] < analyzer.UNSURE_BELOW
+
+
+def test_an_unsure_view_falls_back_to_the_plant_model(fake_models):
+    """Only a confident "this is produce" should bypass PlantNet."""
+    state, path = fake_models
+    state["view"] = (harvest.VIEW_HARVEST, 0.2)
+    state["species"] = [("Cydonia oblonga", 0.7)]
+    state["produce"] = [("apple", 0.99)]
+
+    assert analyzer.analyze(path)["plant"]["commonName"] == "Behi"
+
+
+def test_growing_plant_still_goes_to_plantnet(fake_models):
+    state, path = fake_models
+    state["view"] = (harvest.VIEW_PLANT, 0.9)
+    state["species"] = [("Coriandrum sativum", 0.83)]
+
+    result = analyzer.analyze(path)
+
+    assert result["view"] == harvest.VIEW_PLANT
+    assert result["plant"]["commonName"] == "Kashnich"

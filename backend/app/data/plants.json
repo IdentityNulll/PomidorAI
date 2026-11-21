@@ -257,7 +257,7 @@
     "scientificName": "Cydonia oblonga",
     "description": "Behi - O'zbekistonda keng tarqalgan mevali daraxt. Mevasi murabbo va taomlarga ishlatiladi.",
     "howItGrows": "Ko'chatdan o'stiriladi, 3-4 yildan keyin hosil beradi. Kuzda pishadi.",
-    "water": "Oyiga 2-3 marta chuqur sug'oriladi. Yosh daraxt ko'proq suv talab qiladi.",
+    "water": "Oyiga 2-3 maShivitrta chuqur sug'oriladi. Yosh daraxt ko'proq suv talab qiladi.",
     "sunlight": "To'liq quyosh.",
     "soil": "Og'irroq, nam saqlaydigan tuproqni ham ko'taradi.",
     "season": "Aprel - Noyabr",
@@ -396,6 +396,69 @@
       "Yozda uchini chimdib turing - ko'p shoxlaydi.",
       "Har 2-3 yilda tupini bo'lib o'tqazing.",
       "Gullagandan keyin pastdan kesing."
+    ]
+  },
+  {
+    "id": "cherry",
+    "commonName": "Gilos",
+    "scientificName": "Prunus avium",
+    "description": "Gilos - erta yozda pishadigan mevali daraxt, O'zbekistonda keng tarqalgan.",
+    "howItGrows": "Ko'chatdan o'stiriladi, 3-4 yilda hosil beradi. May-iyunda pishadi.",
+    "water": "Oyiga 2-3 marta chuqur sug'oriladi. Meva pishish davrida ortiqcha suv bermang - meva yorilади.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Suv yaxshi o'tadigan, chuqur tuproq.",
+    "season": "Aprel - Iyun",
+    "commonDiseases": [
+      "Un-shudring",
+      "Monilioz",
+      "Barg teshilishi"
+    ],
+    "careTips": [
+      "Hosildan keyin shakl beruvchi kesish qiling.",
+      "Qushlardan to'r bilan himoyalang.",
+      "Yorilishning oldini olish uchun sug'orishni bir tekis qiling."
+    ]
+  },
+  {
+    "id": "peach",
+    "commonName": "Shaftoli",
+    "scientificName": "Prunus persica",
+    "description": "Shaftoli - issiqsevar mevali daraxt. O'zbekiston iqlimida yaxshi hosil beradi.",
+    "howItGrows": "Ko'chatdan, 2-3 yilda hosilga kiradi. Iyul-avgustda pishadi.",
+    "water": "Haftada 1 marta chuqur sug'orish. Meva to'lishish davrida muhim.",
+    "sunlight": "To'liq quyosh, shamoldan himoyalangan joy.",
+    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "season": "Mart - Avgust",
+    "commonDiseases": [
+      "Bakterial dog'lanish",
+      "Barg burishishi",
+      "Monilioz"
+    ],
+    "careTips": [
+      "Har yil kuchli kesish qiling - shaftoli yangi novdada hosil beradi.",
+      "Mevalarni siyraklang.",
+      "Bahorda gullashdan oldin dorilang."
+    ]
+  },
+  {
+    "id": "strawberry",
+    "commonName": "Qulupnay",
+    "scientificName": "Fragaria ananassa",
+    "description": "Qulupnay - past bo'yli ko'p yillik rezavor o'simlik. Bahorda hosil beradi.",
+    "howItGrows": "Ko'chat yoki mo'ylovdan ko'paytiriladi. Ekilgan yili hosil beradi.",
+    "water": "Haftada 2 marta. Tomchilatib sug'orish eng yaxshisi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Chirindiga boy, nordonroq (pH 5.5-6.5) tuproq.",
+    "season": "Aprel - Iyun",
+    "commonDiseases": [
+      "Barg kuyishi",
+      "Kulrang chirish",
+      "O'rgimchakkana"
+    ],
+    "careTips": [
+      "Tagiga somon to'shang - meva toza va sog'lom bo'ladi.",
+      "Har 3 yilda yangi joyga ko'chiring.",
+      "Ortiqcha mo'ylovlarni kesib tashlang."
     ]
   }
 ]
