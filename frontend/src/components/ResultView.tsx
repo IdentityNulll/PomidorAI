@@ -2,9 +2,16 @@ import { AlertTriangle, Droplets, Mountain, Sprout, Sun, CalendarDays } from 'lu
 import { uz } from '../i18n/uz';
 import type { ScanDetail } from '../types';
 import { Card, ConfidenceBar, SectionTitle } from './ui';
+import { CONFIDENCE_FLOOR } from '../lib/confidence';
 
-// Below this, the model is not trusted to name anything.
-const CONFIDENCE_FLOOR = 0.5;
+/**
+ * The species model knows 7806 plants but only a few hundred have an Uzbek
+ * name, so commonName is often empty. Show the scientific name as the
+ * heading rather than rendering a blank one.
+ */
+function displayName(plant: { commonName: string; scientificName: string }): string {
+  return plant.commonName || plant.scientificName;
+}
 
 export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: string }) {
   const plantSure = scan.plant.confidence >= CONFIDENCE_FLOOR;
@@ -29,11 +36,13 @@ export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: st
           <>
             <div>
               <h3 className="text-2xl font-bold leading-tight text-ink-900 dark:text-white">
-                {scan.plant.commonName}
+                {displayName(scan.plant)}
               </h3>
-              <p className="mt-0.5 text-base italic text-ink-500 dark:text-ink-400">
-                {scan.plant.scientificName}
-              </p>
+              {scan.plant.commonName && (
+                <p className="mt-0.5 text-base italic text-ink-500 dark:text-ink-400">
+                  {scan.plant.scientificName}
+                </p>
+              )}
             </div>
             <ConfidenceBar label={uz.resultConfidence} value={scan.plant.confidence} emphasis />
           </>

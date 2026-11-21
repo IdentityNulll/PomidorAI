@@ -16,7 +16,7 @@ accuracy limits are real and specific.
 | Layer    | Choice                                                                   |
 | -------- | ------------------------------------------------------------------------ |
 | Backend  | Python, FastAPI, SQLite (SQLAlchemy), Pillow                             |
-| Vision   | PyTorch (CPU) + transformers: CLIP for species, a PlantVillage ViT for disease |
+| Vision   | PyTorch (CPU) + timm + transformers: PlantNet for species (7806), PlantVillage ViT for disease, CLIP for gating |
 | Frontend | React 18 + Vite + TypeScript, Tailwind CSS, lucide-react, self-hosted Inter |
 | Tests    | pytest (backend), Playwright (mobile UI)                                 |
 
@@ -30,6 +30,7 @@ The model weights are downloaded once, then cached; after that you can set
 - Python 3.10+
 - Node.js 18+
 - ~1 GB disk for the model weights, ~2 GB RAM while running
+- No GPU, and no training step: all three models are pretrained
 
 ## Running
 
@@ -116,154 +117,103 @@ explicitly in production** — losing the key invalidates every existing session
 
 ## How the analysis works
 
-All analysis still goes through one function — `analyze(image_path)` in
-**`backend/app/analyzer.py`** — which is the only thing `main.py` calls. The
-models live in `backend/app/vision/`.
+All analysis goes through one function - `analyze(image_path)` in
+**`backend/app/analyzer.py`** - which is the only thing `main.py` calls. The
+models live in `backend/app/vision/`. Everything runs locally on CPU.
 
-Two models, each used only where it is actually good:
+| Model | Source | Job |
+| ----- | ------ | --- |
+| PlantNet mobilenetv4 | `PlantNet/mobilenetv4-conv-s-plantclef2024` (Apache-2.0) | **what plant is this** - 7806 species |
+| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | two gates: "is this a plant at all" and "is this a close-up leaf" |
+| PlantVillage ViT | `kimcomehome/plantvillage-vit-leaf-disease` | disease, for 14 crops, on leaf close-ups |
 
-| Model | Repo | Used for |
-| ----- | ---- | -------- |
-| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | frozen feature extractor, plus the "is this a close-up leaf" gate |
-| Species head | `app/vision/weights/species_head.npz` (trained here) | species on whole-plant / fruit / field photos, and rejecting non-crops |
-| PlantVillage ViT | `kimcomehome/plantvillage-vit-leaf-disease` | disease, and species on close-up leaves |
+No training step. All three are pretrained and downloaded once
+(`backend/scripts/fetch_models.py`), then run offline.
 
-### Routing
+### Why three models
 
-Species comes from a **linear head trained on real photographs** (see
-[Training the species head](#training-the-species-head)), blended with the
-older zero-shot prompts. Both score the photo against the eight crops in
-`plants.json` *plus* a **"not a crop" class**. That extra class matters: a
-softmax over eight crops has nowhere else to put its mass, so without it a
-photo of a cat comes back as a confident crop. With it, the app says
-unidentified.
+Neither specialist can say "I don't know". PlantNet returns a species for a
+photo of a car; the PlantVillage model returns a disease for a photo of a
+rose. CLIP supplies the two abstentions:
 
-Then the photo is classified as leaf-like or not, because the disease model
-was trained on single leaves against plain backgrounds and is unreliable
-anywhere else:
+1. **plantness** - no plant in frame, stop and report nothing.
+2. **leafiness** - not a close-up leaf, so cap any disease claim into the
+   "not sure" band. The disease model was trained on single leaves against
+   plain backgrounds and is unreliable on field and whole-plant shots.
 
-- **Not leaf-like** (whole plant, fruit, field) → the species head decides.
-  Any disease output is capped below the UI's 0.50 threshold, so the app says
-  "not sure" instead of diagnosing from a photo the model cannot read.
-- **Leaf-like** → the PlantVillage model decides the species, because CLIP
-  features are weak at fine-grained leaf shapes (most broad green leaves read
-  as cotton). If neither model is confident, the result is reported as unsure
-  rather than guessed.
+On a close-up leaf the disease model may *also* correct the species, but only
+when PlantNet is itself unsure. It has 14 classes and cannot abstain, so on a
+beet leaf it confidently answers "Tomato" - letting that win turned a correct
+"Lavlagi 0.86" into "Pomidor 0.69" during development.
 
-Health predictions are never more confident than the species they assume.
+### What the user sees, in three tiers
 
-### Measured accuracy
+The species model knows 7806 plants; we do not have Uzbek agronomy advice for
+all of them, and will not invent it.
 
-Species identification, on **280 held-out images** the trained head never
-saw (9 classes: the eight crops plus "not a crop"). Images are degraded to
-each size and re-compressed, imitating a phone upload over slow mobile data:
+1. **Curated crop** (19 in `data/plants.json`) - full Uzbek card: water,
+   sun, soil, season, diseases, care tips.
+2. **Known to Wikidata** (241 species) - correct Uzbek name, falling back to
+   the genus's name, plus a short description where one exists. No advice.
+3. **Neither** - the scientific name alone.
 
-| resolution | zero-shot prompts | trained head | production (blended) |
-| ---------- | ----------------- | ------------ | -------------------- |
-| full       | 66.4%             | 78.2%        | **79.3%**            |
-| 640 px     | 67.1%             | 78.9%        | **78.9%**            |
-| 320 px     | 66.4%             | 80.0%        | **78.9%**            |
-| 160 px     | 62.5%             | 73.9%        | **73.2%**            |
-| 96 px      | 53.6%             | 64.6%        | **62.9%**            |
+Uzbek names come from Wikidata (CC0), fetched once by
+`backend/scripts/fetch_uz_names.py` into `app/vision/data/uz_species.json`
+so runtime stays offline.
 
-Two things worth reading off this table:
+### Confidence is calibrated, and the threshold is measured
 
-- **Low resolution barely matters until it is extreme.** 320 px scores the
-  same as full resolution, and 160 px (73.2%) still beats the old zero-shot
-  prompts at *full* resolution (66.4%). CLIP resizes everything to 224x224
-  anyway, so there is little left to lose until the image drops below that.
-- **The blend only clearly helps at full resolution.** Below it, head-only is
-  within a point or two either way. At n=280 that is inside the noise
-  (standard error ~2.4 points), so do not read the 320/160 rows as the blend
-  hurting. It is kept because it fixes a real failure mode (below).
+With 7806 classes the probability mass is spread far thinner than with the
+old 8-class model - a top-1 of 0.42 is about 3000x above chance. Measured on
+1143 labelled photos:
 
-Per-class recall, because a single average hides a lot:
+| threshold | names a plant | of those, correct |
+| --------- | ------------- | ----------------- |
+| 0.50      | 20%           | 75%               |
+| **0.30**  | **33%**       | **67%**           |
+| 0.20      | 45%           | 61%               |
 
-| class | recall | | class | recall |
-| ----- | ------ | - | ----- | ------ |
-| wheat | 90.0% | | apple | 74.1% |
-| not-a-crop | 87.5% | | grape | 73.1% |
-| cotton | 82.8% | | apricot | 72.2% |
-| pomegranate | 81.8% | | potato | 58.3% |
-| tomato | 74.1% | | | |
+0.50 was inherited from the 8-class model and left this one mute on photos
+where it knew the answer. The app uses **0.30**
+(`backend/app/vision/thresholds.py`, mirrored in
+`frontend/src/lib/confidence.ts`). The percentage is always shown next to the
+name, and the disclaimer is permanent.
 
-Potato is the weakest class and is mostly lost to cotton. Apple and apricot
-trade with each other, which is unsurprising for two similar orchard trees.
+### Measured on 24 real garden photos
 
-### Why the head is blended with the prompts
+Taken on an Uzbek phone in November - peppers, autumn foliage, weeds, herbs,
+roses - i.e. mostly *not* the eight crops the old model knew.
 
-The two methods fail differently, so `identify()` combines them with a
-geometric blend (`BLEND_ALPHA = 0.75`, favouring the head).
+| | old 8-crop model | now |
+| --- | --- | --- |
+| named a plant | 20 of 24 | 10 of 24 |
+| named it correctly | ~2 | 10 |
 
-The head alone read a perfectly ordinary whole-plant tomato photo as
-"not a crop" at 0.70, where the prompts had it at 0.99. Blended, it comes
-back as tomato and the app shows a name again.
+The old model force-fitted everything into eight crops: pepper plants came
+back "Pomidor", weeds "Kartoshka", coriander "Uzum". Now it correctly names
+Kashnich (coriander), Lavlagi (beet), Behi (quince), Shivit (dill),
+Xrizantema and Itburun (rose) - and says nothing on the other 14 rather than
+guessing.
 
-The blend weight was chosen on one half of the held-out split and confirmed
-on the other half, which had no part in choosing it: **0.793 blended vs
-0.779 head-only vs 0.657 zero-shot**. Tuning a hyperparameter on the same
-data you then quote is how a benchmark ends up lying.
+### What it still cannot do
 
-### An earlier benchmark that turned out to be contaminated
-
-An earlier nine-photo end-to-end check is no longer an accuracy claim: three
-of those photos (potato, wheat, cat) were pulled into the training set by
-`fetch_dataset.py`, which searches Commons with overlapping terms. Verified
-by comparing the URL hashes the fetcher names files with, not by assuming.
-
-On the six genuinely held-out photos the full pipeline gives 4 correct, 1
-unsure, 1 wrong. Treat that run as a smoke test of the routing; the 280-image
-split above is the real number.
-
-### What it cannot do
-
-- **Only the four crops tomato, potato, apple and grape get real disease
-  detection.** Cotton, wheat, pomegranate and apricot fall back to a CLIP
-  healthy-vs-diseased prompt comparison, which is a weak signal and is
-  deliberately capped into the "unsure" band.
-- Disease detection needs a **close-up of a single leaf**. Field and
-  whole-plant shots will not produce a diagnosis by design.
-- The eight crops are a closed set. Anything else should come back
-  unidentified — that is what the distractors are for.
-- PlantVillage models are known to degrade on real field photography compared
-  to their training set. Treat output as a prompt to look closer, which is
-  exactly what the app's permanent disclaimer says.
-
-### Training the species head
-
-Species identification does not rely on hand-written prompts any more. A
-**linear probe** over frozen CLIP features is trained on real photographs:
-
-```bash
-python backend/scripts/fetch_dataset.py --per-class 260   # ~1400 CC images from Wikimedia Commons
-python backend/scripts/train_head.py                      # minutes on CPU
-python backend/scripts/evaluate_head.py                   # accuracy vs zero-shot, by resolution
-```
-
-CLIP stays frozen; only a softmax layer on top of its embeddings is fitted.
-That is why this trains on a laptop CPU in minutes instead of needing a GPU
-for days — and why ~1400 images is enough, where training a network from
-scratch would need orders of magnitude more.
-
-The dataset lands in `backend/data/dataset/` (gitignored). The trained head is
-`backend/app/vision/weights/species_head.npz`, a few hundred KB, and **is**
-committed so a fresh checkout works without retraining. If the file is absent
-the app silently falls back to the old zero-shot prompts.
-
-**Low resolution is trained for, not hoped for.** Every training image is also
-embedded at 640 px, 320 px and 160 px with JPEG quality dropped to match, so
-the head learns the degraded features a phone photo actually arrives with over
-slow mobile data. `evaluate_head.py` reports accuracy per resolution.
-
-The negative class matters as much as the crops: it contains other plants and
-crops (maize, sunflower, cucumber, pepper, roses, oaks) and not just obviously
-non-plant photos, so the model learns to reject *a plant that is not one of
-our eight* rather than merely rejecting cats.
+- **Half the photos get no name.** Autumn foliage and distant whole-plant
+  shots are genuinely hard; the model abstains instead of guessing. Close-ups
+  of leaves or flowers work much better.
+- **Disease only for 14 crops** (tomato, potato, apple, grape, pepper, maize,
+  cherry, peach, strawberry, squash, orange, soybean, blueberry, raspberry)
+  and only on **close-up single-leaf photos**. Everything else is reported as
+  unsure by design.
+- **Only 19 plants have Uzbek growing advice**, and 241 of 7806 have an Uzbek
+  name at all. The rest show a Latin binomial.
+- PlantVillage models degrade on real field photography versus their training
+  set. Treat output as a prompt to look closer - which is what the permanent
+  disclaimer says.
 
 ### Swapping in different models
 
-The seam is unchanged. `analyze()` takes an absolute path to a normalised JPEG
-(RGB, ≤1280 px, EXIF stripped) and returns:
+The seam is unchanged. `analyze()` takes an absolute path to a normalised
+JPEG (RGB, <=1280 px, EXIF stripped) and returns:
 
 ```python
 {
@@ -277,24 +227,21 @@ The seam is unchanged. `analyze()` takes an absolute path to a normalised JPEG
 }
 ```
 
-- Confidences must be **calibrated probabilities in 0.0–1.0**, not logits. The
-  UI hides the plant name and shows "Ishonchim komil emas…" below **0.50** and
-  applies the same rule to health.
-- `plant.id` must match an id in `plants.json`; `info` is looked up from there.
-- `health.predictions` should include a healthy class labelled `Sog'lom`.
-- Point at different weights without touching code via `POMIDORAI_CLIP_MODEL`
-  and `POMIDORAI_DISEASE_MODEL`.
-- Inference runs in a threadpool (`run_in_threadpool`) so it does not block the
-  event loop. If it gets much slower, move it to a worker — the API contract
-  does not change.
+- Confidences must be **calibrated probabilities in 0.0-1.0**, not logits.
+- `commonName` may be empty; the UI then shows `scientificName` as the heading.
+- `plant.id` matches `plants.json` when curated, `"wild"` for an uncurated
+  species, `"unknown"` when the photo is not a plant.
+- Override the checkpoints with `POMIDORAI_SPECIES_MODEL`,
+  `POMIDORAI_DISEASE_MODEL`, `POMIDORAI_CLIP_MODEL`.
+- Inference runs in a threadpool so it does not block the event loop.
 
-### ⚠️ Placeholder content
+### Placeholder content
 
-`backend/app/data/plants.json` holds 8 plants (tomato, cotton, grape, apple,
-wheat, pomegranate, apricot, potato). **All of its Uzbek text is
-machine-written and has not been reviewed by an agronomist**, and so are the
-Uzbek disease names in `backend/app/vision/labels.py`. Both must be verified
-before the app gives real advice — see `backend/app/data/README.md`.
+`backend/app/data/plants.json` (19 crops) and the Uzbek disease names in
+`backend/app/vision/labels.py` are **machine-written and have not been
+reviewed by an agronomist.** Verify before the app gives real advice - see
+`backend/app/data/README.md`. The Wikidata names are CC0 community data and
+carry the same caveat.
 
 ## API
 
@@ -383,10 +330,14 @@ pomidorAI/
 │   │   ├── main.py            # routes
 │   │   ├── analyzer.py        # THE SEAM - routing between the two models
 │   │   ├── vision/            # the models themselves
-│   │   │   ├── models.py      # lazy, cached loading
-│   │   │   ├── species.py     # CLIP zero-shot + leaf / distractor gates
+│   │   │   ├── plantnet.py    # species: 7806 plants
+│   │   │   ├── gates.py       # CLIP: is-a-plant / is-a-leaf
 │   │   │   ├── disease.py     # PlantVillage ViT + weak CLIP fallback
-│   │   │   └── labels.py      # prompts and English -> Uzbek disease names
+│   │   │   ├── names.py       # scientific name -> Uzbek, three tiers
+│   │   │   ├── thresholds.py  # the measured confidence floor
+│   │   │   ├── models.py      # lazy, cached CLIP + disease loading
+│   │   │   ├── labels.py      # prompts, English -> Uzbek disease names
+│   │   │   └── data/          # uz_species.json (Wikidata, CC0)
 │   │   ├── images.py          # upload validation, resize, EXIF strip
 │   │   ├── session.py         # signed anonymous session cookie
 │   │   ├── db.py              # SQLAlchemy engine + Scan model
@@ -394,7 +345,7 @@ pomidorAI/
 │   │   └── data/
 │   │       ├── plants.json    # placeholder content - needs agronomist review
 │   │       └── README.md
-│   ├── scripts/fetch_models.py  # one-time weight download
+│   ├── scripts/               # fetch_models.py, fetch_uz_names.py
 │   ├── tests/
 │   └── data/                  # gitignored: uploads/, pomidorai.db, secret.key
 └── frontend/

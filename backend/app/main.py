@@ -18,6 +18,7 @@ from . import db, models, session as sess
 from .analyzer import analyze
 from .images import remove_files, resolve_owned_file, save_upload
 from .vision import models as vision_models
+from .vision import plantnet as species_model
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ async def lifespan(_: FastAPI):
     # Load the vision models up front so the first scan is not slowed by a
     # cold start. Failure here is logged, not fatal.
     await run_in_threadpool(vision_models.warm)
+    await run_in_threadpool(species_model.warm)
     yield
 
 

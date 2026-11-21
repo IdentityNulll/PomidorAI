@@ -6,9 +6,9 @@ import type { Scan } from '../types';
 import { Button, Card } from './ui';
 import { ConfirmDialog } from './ConfirmDialog';
 import { ScanDetailSheet } from './ScanDetailSheet';
+import { CONFIDENCE_FLOOR } from '../lib/confidence';
 
 const PAGE_SIZE = 10;
-const CONFIDENCE_FLOOR = 0.5;
 
 type Pending = { kind: 'one'; id: string } | { kind: 'all' };
 
@@ -193,7 +193,7 @@ function HistoryRow({
 
         <span className="min-w-0 flex-1">
           <span className="block truncate text-base font-semibold text-ink-900 dark:text-white">
-            {sure ? scan.plant.commonName : uz.unknownPlant}
+            {sure ? scan.plant.commonName || scan.plant.scientificName : uz.unknownPlant}
           </span>
           {health && (
             <span

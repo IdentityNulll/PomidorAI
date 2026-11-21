@@ -21,12 +21,13 @@ from PIL.Image import Image
 
 from .labels import CROP_BY_PLANT_ID, DISEASE_UZ, HEALTH_PROMPTS, HEALTHY, SPECIES_PROMPTS
 from .models import load
+from .thresholds import UNSURE_CAP
 
 PLANT_ID_BY_CROP = {crop: plant_id for plant_id, crop in CROP_BY_PLANT_ID.items()}
 
 # The CLIP fallback distinguishes rough state, not specific diseases, so its
-# confidence stays below the UI's 0.50 "sure" threshold.
-FALLBACK_CONFIDENCE_CAP = 0.49
+# confidence stays below the UI's "sure" threshold.
+FALLBACK_CONFIDENCE_CAP = UNSURE_CAP
 
 
 @dataclass
@@ -88,12 +89,22 @@ def from_reading(reading: LeafReading, plant_id: str) -> list[dict]:
     return [{"label": label, "confidence": round(value, 2)} for label, value in ranked]
 
 
-def clip_fallback(image: Image, plant_id: str) -> list[dict]:
-    """Rough healthy-vs-diseased for crops the disease model does not cover."""
+def clip_fallback(image: Image, plant_id: str, scientific: str = "") -> list[dict]:
+    """Rough healthy-vs-diseased for crops the disease model does not cover.
+
+    Prompts are built from the plant's own name. Not every curated crop has a
+    hand-written CLIP prompt (and the species model knows 7806 plants that
+    never will), so fall back to the scientific name, then to a generic
+    "plant" - never assume a prompt exists.
+    """
     bundle = load()
     torch = bundle.torch
 
-    plant = SPECIES_PROMPTS[plant_id][0].removeprefix("a ").removeprefix("an ")
+    prompts = SPECIES_PROMPTS.get(plant_id)
+    if prompts:
+        plant = prompts[0].removeprefix("a ").removeprefix("an ")
+    else:
+        plant = scientific or "plant"
 
     texts: list[str] = []
     owners: list[str] = []

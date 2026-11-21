@@ -9,7 +9,11 @@
     "sunlight": "Kuniga kamida 6-8 soat to'g'ridan-to'g'ri quyosh nuri kerak.",
     "soil": "Suv yaxshi o'tadigan, chirindiga boy yengil tuproq. Kislotaliligi 6.0-6.8.",
     "season": "Mart - Sentabr",
-    "commonDiseases": ["Fitoftoroz", "Un-shudring", "Barg dog'lanishi"],
+    "commonDiseases": [
+      "Fitoftoroz",
+      "Un-shudring",
+      "Barg dog'lanishi"
+    ],
     "careTips": [
       "Pastki barglarni va qo'shimcha novdalarni olib tashlang.",
       "Tomirga sug'orib, barglarni ho'l qilmang.",
@@ -26,7 +30,11 @@
     "sunlight": "To'liq quyosh talab qiladi, soyada hosil kamayadi.",
     "soil": "O'tloqi yoki bo'z tuproq. Sho'rlanishga nisbatan chidamli.",
     "season": "Aprel - Oktabr",
-    "commonDiseases": ["Vilt (Vertitsillyoz)", "Gommoz", "Ildiz chirishi"],
+    "commonDiseases": [
+      "Vilt (Vertitsillyoz)",
+      "Gommoz",
+      "Ildiz chirishi"
+    ],
     "careTips": [
       "Qatorlar orasini yumshatib, begona o'tlarni yo'qotib turing.",
       "O'simlik uchini chilpish hosilni oshiradi.",
@@ -43,7 +51,11 @@
     "sunlight": "To'liq quyosh kerak. Shingillar yaxshi yorishishi muhim.",
     "soil": "Tosh-shag'alli, suv yaxshi o'tadigan tuproq. Nam turib qolishini yoqtirmaydi.",
     "season": "Aprel - Oktabr",
-    "commonDiseases": ["Mildyu", "Oidium", "Kulrang chirish"],
+    "commonDiseases": [
+      "Mildyu",
+      "Oidium",
+      "Kulrang chirish"
+    ],
     "careTips": [
       "Har yili qishda yoki erta bahorda butash shart.",
       "Tokni simbog'ga tortib, havo almashinuvini ta'minlang.",
@@ -60,7 +72,11 @@
     "sunlight": "Kuniga 6 soatdan ko'p quyosh nuri kerak.",
     "soil": "Chirindiga boy, suv yaxshi o'tadigan o'rtacha og'ir tuproq.",
     "season": "Aprel - Oktabr",
-    "commonDiseases": ["Olma qo'tiri", "Un-shudring", "Monilioz"],
+    "commonDiseases": [
+      "Olma qo'tiri",
+      "Un-shudring",
+      "Monilioz"
+    ],
     "careTips": [
       "Quruq va kasallangan shoxlarni erta bahorda kesib tashlang.",
       "To'kilgan barg va mevalarni yig'ib yo'qoting - kasallik shu yerda qishlaydi.",
@@ -77,7 +93,11 @@
     "sunlight": "To'liq quyosh talab qiladi.",
     "soil": "O'tloqi va bo'z tuproqlar. Neytral kislotalilik qulay.",
     "season": "Oktabr - Iyul",
-    "commonDiseases": ["Zang kasalligi", "Qorakuya", "Septorioz"],
+    "commonDiseases": [
+      "Zang kasalligi",
+      "Qorakuya",
+      "Septorioz"
+    ],
     "careTips": [
       "Sifatli va dorilangan urug' ishlatilsa kasallik kamayadi.",
       "Bahorda azotli o'g'it bilan oziqlantiring.",
@@ -94,7 +114,11 @@
     "sunlight": "To'liq quyosh kerak, issiq joyni yaxshi ko'radi.",
     "soil": "Qumoq yoki shag'alli tuproq. Sho'rlanishga chidamli.",
     "season": "Aprel - Oktabr",
-    "commonDiseases": ["Meva chirishi", "Barg dog'lanishi", "Anor kuyasi"],
+    "commonDiseases": [
+      "Meva chirishi",
+      "Barg dog'lanishi",
+      "Anor kuyasi"
+    ],
     "careTips": [
       "Qishda sovuq hududlarda butalarni egib ko'mib qo'ying.",
       "Ildiz bo'g'zidan chiqqan bachkilarni olib tashlang.",
@@ -111,7 +135,11 @@
     "sunlight": "To'liq quyosh talab qiladi.",
     "soil": "Suv yaxshi o'tadigan, ohakka boy tuproq. Nam turib qolishiga chidamsiz.",
     "season": "Mart - Iyul",
-    "commonDiseases": ["Monilioz", "Klyasterosporioz", "Yelimlash (gommoz)"],
+    "commonDiseases": [
+      "Monilioz",
+      "Klyasterosporioz",
+      "Yelimlash (gommoz)"
+    ],
     "careTips": [
       "Gullash erta bo'lgani uchun bahorgi sovuqdan himoyalashga harakat qiling.",
       "Kasallangan shoxlarni kesib, kesilgan joyni bog' malhami bilan bekiting.",
@@ -128,11 +156,246 @@
     "sunlight": "Kuniga 5-6 soat quyosh nuri kerak. Jazirama issiqni yoqtirmaydi.",
     "soil": "Yengil, yumshoq va chirindiga boy tuproq.",
     "season": "Fevral - Iyun / Iyul - Oktabr",
-    "commonDiseases": ["Fitoftoroz", "Alternarioz", "Quruq chirish"],
+    "commonDiseases": [
+      "Fitoftoroz",
+      "Alternarioz",
+      "Quruq chirish"
+    ],
     "careTips": [
       "O'simlik 15-20 sm bo'lganda tagiga tuproq tortib qo'ying.",
       "Kolorado qo'ngizini qo'lda yoki ruxsat etilgan dori bilan yo'qotib turing.",
       "Hosilni quruq va qorong'i joyda saqlang."
+    ]
+  },
+  {
+    "id": "pepper",
+    "commonName": "Qalampir",
+    "scientificName": "Capsicum annuum",
+    "description": "Qalampir - O'zbekiston bog'larida keng ekiladigan sabzavot. Shirin va achchiq navlari bor.",
+    "howItGrows": "Ko'chat aprel oyida ekiladi. Ekilgandan 70-90 kun keyin hosil beradi.",
+    "water": "Haftada 2-3 marta. Tuproq doim nam bo'lsin, lekin suv turib qolmasin.",
+    "sunlight": "Kuniga kamida 6 soat to'g'ridan-to'g'ri quyosh.",
+    "soil": "Chirindiga boy, yengil, suv yaxshi o'tadigan tuproq.",
+    "season": "Aprel - Sentabr",
+    "commonDiseases": [
+      "Bakterial dog'lanish",
+      "Un-shudring",
+      "Bitlar"
+    ],
+    "careTips": [
+      "Shamoldan himoyalangan joyga eking.",
+      "Hosilni muntazam yig'ing - yangi mevalar ko'proq tugadi.",
+      "Pomidordan keyin bir joyga ekmang."
+    ]
+  },
+  {
+    "id": "coriander",
+    "commonName": "Kashnich",
+    "scientificName": "Coriandrum sativum",
+    "description": "Kashnich - oshxonada keng ishlatiladigan ko'kat. Barglari va urug'i ishlatiladi.",
+    "howItGrows": "Urug'dan to'g'ridan-to'g'ri ekiladi. 30-45 kunda ko'kati tayyor bo'ladi.",
+    "water": "Tuproq ustki qatlami qurigach sug'oriladi. Haftada 2 marta yetarli.",
+    "sunlight": "Yarim soya yoki to'liq quyosh. Juda issiqda tez gullab ketadi.",
+    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "season": "Mart - May / Avgust - Oktabr",
+    "commonDiseases": [
+      "Un-shudring",
+      "Ildiz chirishi",
+      "Bitlar"
+    ],
+    "careTips": [
+      "Har 2-3 haftada yangidan eking - uzluksiz hosil bo'ladi.",
+      "Issiq havoda soyaroq joyga eking.",
+      "Gullashdan oldin barglarini yig'ing."
+    ]
+  },
+  {
+    "id": "dill",
+    "commonName": "Shivit",
+    "scientificName": "Anethum graveolens",
+    "description": "Shivit - milliy taomlarda ishlatiladigan xushbo'y ko'kat.",
+    "howItGrows": "Urug'dan ekiladi, 40-60 kunda yig'ishtiriladi. Sovuqqa chidamli.",
+    "water": "Haftada 1-2 marta. Ortiqcha suvni yoqtirmaydi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Qumoq, yengil tuproq.",
+    "season": "Mart - Oktabr",
+    "commonDiseases": [
+      "Un-shudring",
+      "Barg dog'lanishi",
+      "Bitlar"
+    ],
+    "careTips": [
+      "Bir joyga qalin ekmang.",
+      "Urug' uchun bir nechta tupni qoldiring.",
+      "Bodring yonida yaxshi o'sadi."
+    ]
+  },
+  {
+    "id": "beet",
+    "commonName": "Lavlagi",
+    "scientificName": "Beta vulgaris",
+    "description": "Lavlagi - ildizmevasi va bargi ishlatiladigan sabzavot. Sovuqqa chidamli.",
+    "howItGrows": "Urug'dan ekiladi. 90-110 kunda ildizmevasi yetiladi.",
+    "water": "Haftada 1-2 marta chuqur sug'oriladi.",
+    "sunlight": "To'liq quyosh yoki yengil soya.",
+    "soil": "Chuqur ishlangan, toshsiz tuproq.",
+    "season": "Mart - Oktabr",
+    "commonDiseases": [
+      "Serkosporoz",
+      "Ildiz chirishi",
+      "Barg dog'lanishi"
+    ],
+    "careTips": [
+      "Ko'chatlarni siyraklang - ildiz yirik bo'ladi.",
+      "Yosh barglarini salatga ishlating.",
+      "Tuproqni qatqaloqlanishdan saqlang."
+    ]
+  },
+  {
+    "id": "quince",
+    "commonName": "Behi",
+    "scientificName": "Cydonia oblonga",
+    "description": "Behi - O'zbekistonda keng tarqalgan mevali daraxt. Mevasi murabbo va taomlarga ishlatiladi.",
+    "howItGrows": "Ko'chatdan o'stiriladi, 3-4 yildan keyin hosil beradi. Kuzda pishadi.",
+    "water": "Oyiga 2-3 marta chuqur sug'oriladi. Yosh daraxt ko'proq suv talab qiladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Og'irroq, nam saqlaydigan tuproqni ham ko'taradi.",
+    "season": "Aprel - Noyabr",
+    "commonDiseases": [
+      "Monilioz",
+      "Olma qo'tiri",
+      "Bakterial kuyish"
+    ],
+    "careTips": [
+      "Qishda quruq va kasal shoxlarni kesing.",
+      "To'kilgan barg va mevalarni yig'ib yo'q qiling.",
+      "Hosilni to'liq sarg'aygach uzing."
+    ]
+  },
+  {
+    "id": "cucumber",
+    "commonName": "Bodring",
+    "scientificName": "Cucumis sativus",
+    "description": "Bodring - issiqsevar sabzavot, O'zbekistonda ochiq dalada ham, issiqxonada ham ekiladi.",
+    "howItGrows": "Urug'dan ekiladi, 45-60 kunda hosil beradi.",
+    "water": "Har kuni yoki kun ora. Suv yetishmasa mevasi achchiq bo'ladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Chirindiga boy, iliq, yengil tuproq.",
+    "season": "May - Sentabr",
+    "commonDiseases": [
+      "Un-shudring",
+      "Mildyu",
+      "O'rgimchakkana"
+    ],
+    "careTips": [
+      "Tayanchga chiqaring - mevasi toza bo'ladi.",
+      "Iliq suv bilan sug'oring.",
+      "Hosilni har 1-2 kunda yig'ing."
+    ]
+  },
+  {
+    "id": "onion",
+    "commonName": "Piyoz",
+    "scientificName": "Allium cepa",
+    "description": "Piyoz - deyarli har bir taomda ishlatiladigan asosiy sabzavot.",
+    "howItGrows": "Urug' yoki sevkadan ekiladi. 100-130 kunda yetiladi.",
+    "water": "Haftada 1 marta. Hosil yig'ishdan 2-3 hafta oldin to'xtatiladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "season": "Mart - Avgust",
+    "commonDiseases": [
+      "Mildyu",
+      "Bo'yin chirishi",
+      "Piyoz pashshasi"
+    ],
+    "careTips": [
+      "Begona o'tlardan toza tuting.",
+      "Bargi yotgach sug'orishni to'xtating.",
+      "Quruq joyda saqlang."
+    ]
+  },
+  {
+    "id": "carrot",
+    "commonName": "Sabzi",
+    "scientificName": "Daucus carota",
+    "description": "Sabzi - palov va boshqa taomlar uchun asosiy ildizmeva.",
+    "howItGrows": "Urug'dan ekiladi, 90-120 kunda yetiladi.",
+    "water": "Haftada 1-2 marta bir tekis sug'oriladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Chuqur, yumshoq, toshsiz qumoq tuproq.",
+    "season": "Mart - Oktabr",
+    "commonDiseases": [
+      "Alternarioz",
+      "Ildiz chirishi",
+      "Sabzi pashshasi"
+    ],
+    "careTips": [
+      "Ko'chatlarni siyraklang.",
+      "Yangi go'ng solmang - ildiz shoxlanadi.",
+      "Tuproqni bir tekis nam tuting."
+    ]
+  },
+  {
+    "id": "maize",
+    "commonName": "Makkajo'xori",
+    "scientificName": "Zea mays",
+    "description": "Makkajo'xori - don va yem uchun ekiladigan asosiy ekin.",
+    "howItGrows": "Urug'dan ekiladi, 90-120 kunda pishadi.",
+    "water": "Mavsumda 4-6 marta. Ro'vak chiqarish davrida suv eng muhim.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Chirindiga boy, chuqur tuproq.",
+    "season": "Aprel - Sentabr",
+    "commonDiseases": [
+      "Zang kasalligi",
+      "Shimoliy barg kuyishi",
+      "Serkosporoz"
+    ],
+    "careTips": [
+      "Bir qator emas, blok qilib eking - changlanish yaxshi bo'ladi.",
+      "Tagiga tuproq tortib qo'ying.",
+      "Yon novdalarni olib tashlamang."
+    ]
+  },
+  {
+    "id": "rose",
+    "commonName": "Atirgul",
+    "scientificName": "Rosa",
+    "description": "Atirgul - bog'larda eng ko'p ekiladigan manzarali gul.",
+    "howItGrows": "Ko'chat yoki qalamchadan. Bahordan kuzgacha gullaydi.",
+    "water": "Haftada 2 marta tagidan sug'oriladi. Bargini ho'llamang.",
+    "sunlight": "Kuniga kamida 6 soat quyosh.",
+    "soil": "Chirindiga boy, suv yaxshi o'tadigan tuproq.",
+    "season": "Aprel - Oktabr",
+    "commonDiseases": [
+      "Un-shudring",
+      "Qora dog'",
+      "Zang"
+    ],
+    "careTips": [
+      "Erta bahorda kesing.",
+      "So'lgan gullarni olib tashlang.",
+      "Tagini ochiq va shamollaydigan qilib saqlang."
+    ]
+  },
+  {
+    "id": "chrysanthemum",
+    "commonName": "Xrizantema",
+    "scientificName": "Chrysanthemum indicum",
+    "description": "Xrizantema - kuzda gullaydigan manzarali gul, sovuqqa chidamli.",
+    "howItGrows": "Qalamcha yoki tup bo'lish orqali. Sentabr-noyabrda gullaydi.",
+    "water": "Haftada 2 marta. Gullash davrida ko'proq.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Suv yaxshi o'tadigan, o'rtacha unumdor tuproq.",
+    "season": "Sentabr - Noyabr",
+    "commonDiseases": [
+      "Un-shudring",
+      "Barg dog'lanishi",
+      "Bitlar"
+    ],
+    "careTips": [
+      "Yozda uchini chimdib turing - ko'p shoxlaydi.",
+      "Har 2-3 yilda tupini bo'lib o'tqazing.",
+      "Gullagandan keyin pastdan kesing."
     ]
   }
 ]

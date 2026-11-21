@@ -11,12 +11,23 @@ the app is used for real advice.
 HEALTHY = "Sog'lom"
 
 # plants.json id -> the crop prefix used by the PlantVillage label space.
-# Only these four of our eight crops are covered by the disease model.
+# All 14 crops the disease model was trained on. Anything outside this set
+# gets the weaker CLIP healthy-vs-diseased fallback instead.
 CROP_BY_PLANT_ID = {
     "tomato": "Tomato",
     "potato": "Potato",
     "apple": "Apple",
     "grape": "Grape",
+    "pepper": "Pepper,_bell",
+    "maize": "Corn_(maize)",
+    "cherry": "Cherry_(including_sour)",
+    "peach": "Peach",
+    "strawberry": "Strawberry",
+    "squash": "Squash",
+    "orange": "Orange",
+    "soybean": "Soybean",
+    "blueberry": "Blueberry",
+    "raspberry": "Raspberry",
 }
 
 # Exact PlantVillage label -> Uzbek. Keys must match the model config verbatim.
@@ -42,6 +53,23 @@ DISEASE_UZ = {
     "Tomato___Tomato_Yellow_Leaf_Curl_Virus": "Sariq barg burishish virusi",
     "Tomato___Tomato_mosaic_virus": "Tamaki mozaikasi virusi",
     "Tomato___healthy": HEALTHY,
+    "Pepper,_bell___Bacterial_spot": "Bakterial dog'lanish",
+    "Pepper,_bell___healthy": HEALTHY,
+    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": "Serkosporoz (kulrang dog')",
+    "Corn_(maize)___Common_rust_": "Zang kasalligi",
+    "Corn_(maize)___Northern_Leaf_Blight": "Shimoliy barg kuyishi",
+    "Corn_(maize)___healthy": HEALTHY,
+    "Cherry_(including_sour)___Powdery_mildew": "Un-shudring",
+    "Cherry_(including_sour)___healthy": HEALTHY,
+    "Peach___Bacterial_spot": "Bakterial dog'lanish",
+    "Peach___healthy": HEALTHY,
+    "Strawberry___Leaf_scorch": "Barg kuyishi",
+    "Strawberry___healthy": HEALTHY,
+    "Squash___Powdery_mildew": "Un-shudring",
+    "Orange___Haunglongbing_(Citrus_greening)": "Sitrus ko'karishi (HLB)",
+    "Blueberry___healthy": HEALTHY,
+    "Raspberry___healthy": HEALTHY,
+    "Soybean___healthy": HEALTHY,
 }
 
 # English CLIP prompts per plants.json id. CLIP is English-trained, so the
@@ -95,21 +123,28 @@ SPECIES_PROMPTS = {
     ],
 }
 
-# If one of these wins, the photo is not one of our crops and the UI should say
-# so rather than naming the closest plant. Without them CLIP always picks a
-# crop, because softmax over eight crops has nowhere else to put the mass.
-DISTRACTOR_PROMPTS = [
+# PlantNet answers with a species for literally any image, so something has
+# to decide whether there is a plant in frame at all. These two prompt sets
+# are that gate.
+PLANT_PROMPTS = [
+    "a plant",
+    "leaves of a plant",
+    "a tree or shrub",
+    "a flower or flowering plant",
+    "a crop growing in a field or garden",
+    "grass or weeds",
+]
+
+NOT_PLANT_PROMPTS = [
     "a person",
     "an animal",
-    "a car",
-    "a building",
+    "a car or vehicle",
+    "a building or street",
     "a computer or phone screen",
-    "a piece of furniture",
+    "furniture or an indoor room",
     "a cooked meal on a plate",
     "a document or text on paper",
-    "an unrelated houseplant",
-    "a flower that is not a crop",
-    "a blurry photo of nothing in particular",
+    "a tool or machine",
 ]
 
 # The disease model was trained on single leaves against a plain background.

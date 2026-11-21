@@ -33,3 +33,6 @@ frontend/playwright-report/
 
 # Local Claude Code permissions
 .claude/settings.local.json
+
+# TypeScript incremental build cache
+frontend/tsconfig.tsbuildinfo

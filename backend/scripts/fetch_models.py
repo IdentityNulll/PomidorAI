@@ -12,10 +12,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from huggingface_hub import snapshot_download  # noqa: E402
 
 from app.vision.models import CLIP_MODEL, DISEASE_MODEL  # noqa: E402
+from app.vision.plantnet import MODEL as SPECIES_MODEL, NAMES_FILE, NAMES_REPO  # noqa: E402
 
 TARGETS = [
     (CLIP_MODEL, ["*.json", "*.txt", "model.safetensors"]),
     (DISEASE_MODEL, ["*.json", "model.safetensors"]),
+    (SPECIES_MODEL, ["*.json", "model.safetensors"]),
+    # Only the species_id -> scientific name map, not the 1 GB ViT alongside it.
+    (NAMES_REPO, [NAMES_FILE]),
 ]
 
 

@@ -28,9 +28,9 @@ test('low confidence hides the name and asks for a clearer photo', async ({
           id: 'tomato',
           commonName: 'Pomidor',
           scientificName: 'Solanum lycopersicum',
-          confidence: 0.31,
+          confidence: 0.12,
         },
-        health: { predictions: [{ label: "Sog'lom", confidence: 0.34 }] },
+        health: { predictions: [{ label: "Sog'lom", confidence: 0.10 }] },
         info: {
           description: 'x',
           howItGrows: 'x',
