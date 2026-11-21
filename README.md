@@ -238,13 +238,59 @@ prompt change that quietly regresses it fails the suite. Re-score with:
 python backend/scripts/evaluate.py --garden <dir> --produce <dir>
 ```
 
+### It learns from corrections
+
+The result card has a **"Noto'g'rimi? To'g'rilash"** button. Pick the right
+crop and the app stores the photo's CLIP embedding with that label. Every
+later scan is compared against that memory first, and a close enough match
+wins over both models.
+
+Nearest-neighbour rather than a training run, because it works from the
+*first* correction, takes effect immediately with no retraining or redeploy,
+and cannot damage crops that already work since it only fires above a
+similarity threshold.
+
+Measured on the labelled garden set:
+
+| | score |
+| --- | --- |
+| no corrections | 15/20 |
+| after 4 corrections (3 pepper, 2 peach photos) | **20/20** |
+
+One correction on a pepper photo also fixed a second, near-identical pepper
+photo that was never corrected.
+
+**The threshold is set by measurement, and the first attempt was wrong.** At
+0.80 similarity, correcting two peach photos silently relabelled five quince
+photos from the same autumn garden - at up to 0.95 confidence. Fixed five,
+broke five, net zero, and spread confident errors. Measured separation:
+
+| | similarity |
+| --- | --- |
+| same plant | min 0.999 |
+| different plant (quince vs a peach correction) | max 0.901 |
+
+So the threshold is **0.92**, plus a requirement that the best match beats
+the best *differently labelled* match by 0.02. Corrections are biased hard
+towards precision: one that fails to fire is a missed improvement, while one
+that leaks spreads exactly the kind of confident wrong answer this feature
+exists to remove. Both failure modes have regression tests.
+
+Corrections are shared across sessions on purpose - knowledge about plants,
+not personal data - and the stored vector cannot be turned back into a
+photo. `POST /api/scans/{id}/correct {"plantId": "..."}`.
+
 ### What it still cannot do
 
 - **Confident answers are now the norm, so wrong ones are louder.** The app
   names a plant in 23 of 24 photos. Where it is wrong it is wrong with
   conviction - the permanent disclaimer matters more than ever.
-- **Only the 22 curated crops are recognised from produce.** A crate of
-  something else should come back unnamed, not forced into the nearest crop.
+- **Only the 22 curated crops are recognised from produce**, and only those
+  can be chosen when correcting. A crate of something else should come back
+  unnamed rather than forced into the nearest crop.
+- **Corrections only generalise to similar photos.** A correction made on a
+  close-up will not fix a distant shot of the same plant; that needs its own
+  correction.
 - **Disease only for 14 crops** (tomato, potato, apple, grape, pepper, maize,
   cherry, peach, strawberry, squash, orange, soybean, blueberry, raspberry)
   and only on **close-up single-leaf photos**. Everything else is reported as
@@ -376,6 +422,7 @@ pomidorAI/
 │   │   ├── analyzer.py        # THE SEAM - routing between the two models
 │   │   ├── vision/            # the models themselves
 │   │   │   ├── crops.py       # the 22 curated crops, any view + view badge
+│   │   │   ├── memory.py      # learning from user corrections
 │   │   │   ├── plantnet.py    # species: 7806 plants
 │   │   │   ├── gates.py       # CLIP: is-a-plant / is-a-leaf
 │   │   │   ├── disease.py     # PlantVillage ViT + weak CLIP fallback

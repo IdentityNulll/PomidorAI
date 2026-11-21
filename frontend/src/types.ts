@@ -45,3 +45,10 @@ export interface ScanListResponse {
   scans: Scan[];
   cursor: string | null;
 }
+
+/** A crop the user can pick when correcting a wrong identification. */
+export interface PlantOption {
+  id: string;
+  commonName: string;
+  scientificName: string;
+}

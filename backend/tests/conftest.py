@@ -53,7 +53,7 @@ def stub_analyzer(monkeypatch):
     assertions depend on model output. The real models are covered in
     test_analyzer.py.
     """
-    monkeypatch.setattr("app.main.analyze", lambda _path: STUB_RESULT)
+    monkeypatch.setattr("app.main.analyze", lambda _path, _corrections=None: STUB_RESULT)
 
 
 @pytest.fixture

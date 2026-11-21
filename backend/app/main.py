@@ -14,17 +14,17 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
-from . import db, models, session as sess
+from . import corrections as corrections_routes, db, models, session as sess
 from .analyzer import analyze
 from .images import remove_files, resolve_owned_file, save_upload
 from .vision import models as vision_models
 from .vision import plantnet as species_model
+from .scans import NOT_FOUND, load_corrections, owned_scan
 
 logger = logging.getLogger(__name__)
 
 HISTORY_LIMIT = 200
 STATIC_DIR = Path(__file__).parent.parent / "static"
-NOT_FOUND = "Topilmadi"
 
 
 @asynccontextmanager
@@ -38,6 +38,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="PomidorAI", lifespan=lifespan)
+app.include_router(corrections_routes.router)
 
 
 def _now() -> datetime:
@@ -56,17 +57,6 @@ def _decode_cursor(cursor: str) -> tuple[datetime, str]:
         return datetime.fromisoformat(timestamp), scan_id
     except (ValueError, TypeError):
         raise HTTPException(status_code=400, detail="Noto'g'ri cursor")
-
-
-def _owned_scan(scan_id: str, request: Request, database: Session) -> db.Scan:
-    session_id = sess.read_session(request)
-    if not session_id:
-        raise HTTPException(status_code=404, detail=NOT_FOUND)
-
-    scan = database.query(db.Scan).filter_by(id=scan_id, session_id=session_id).first()
-    if not scan:
-        raise HTTPException(status_code=404, detail=NOT_FOUND)
-    return scan
 
 
 def _enforce_history_cap(session_id: str, database: Session) -> None:
@@ -98,10 +88,12 @@ async def analyze_endpoint(
     session_id = sess.ensure_session(request, response)
     image_path, thumb_path = await save_upload(image)
 
+    corrections = load_corrections(database)
+
     try:
         # Inference is CPU-bound and synchronous; keep it off the event loop
         # so one scan does not stall every other request.
-        result = await run_in_threadpool(analyze, str(image_path))
+        result = await run_in_threadpool(analyze, str(image_path), corrections)
     except Exception:
         logger.exception("analysis failed")
         remove_files(str(image_path), str(thumb_path))
@@ -180,7 +172,7 @@ def list_scans(
 
 @app.get("/api/scans/{scan_id}", response_model=models.ScanDetail)
 def get_scan(scan_id: str, request: Request, database: Session = Depends(db.get_db)):
-    scan = _owned_scan(scan_id, request, database)
+    scan = owned_scan(scan_id, request, database)
     result = json.loads(scan.result)
     return models.ScanDetail(
         id=scan.id,
@@ -194,19 +186,19 @@ def get_scan(scan_id: str, request: Request, database: Session = Depends(db.get_
 
 @app.get("/api/scans/{scan_id}/image")
 def get_scan_image(scan_id: str, request: Request, database: Session = Depends(db.get_db)):
-    scan = _owned_scan(scan_id, request, database)
+    scan = owned_scan(scan_id, request, database)
     return FileResponse(resolve_owned_file(scan.image_path), media_type="image/jpeg")
 
 
 @app.get("/api/scans/{scan_id}/thumb")
 def get_scan_thumb(scan_id: str, request: Request, database: Session = Depends(db.get_db)):
-    scan = _owned_scan(scan_id, request, database)
+    scan = owned_scan(scan_id, request, database)
     return FileResponse(resolve_owned_file(scan.thumbnail_path), media_type="image/jpeg")
 
 
 @app.delete("/api/scans/{scan_id}")
 def delete_scan(scan_id: str, request: Request, database: Session = Depends(db.get_db)):
-    scan = _owned_scan(scan_id, request, database)
+    scan = owned_scan(scan_id, request, database)
     remove_files(scan.image_path, scan.thumbnail_path)
     database.delete(scan)
     database.commit()

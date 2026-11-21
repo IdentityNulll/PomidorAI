@@ -21,7 +21,7 @@ from functools import lru_cache
 import numpy as np
 from PIL.Image import Image
 
-from .labels import LEAF_PROMPTS, NOT_LEAF_PROMPTS, NOT_PLANT_PROMPTS, PLANT_PROMPTS
+from .prompts import LEAF_PROMPTS, NOT_LEAF_PROMPTS, NOT_PLANT_PROMPTS, PLANT_PROMPTS
 from .models import load
 
 

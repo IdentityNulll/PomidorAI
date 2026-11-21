@@ -27,14 +27,7 @@ import numpy as np
 from PIL.Image import Image
 
 from .gates import _image_vector, _scale, _softmax, _text_vectors
-from .labels import (
-    CROP_OTHER,
-    CROP_PROMPTS,
-    VIEW_HARVEST,
-    VIEW_LEAF,
-    VIEW_PLANT,
-    VIEW_PROMPTS,
-)
+from .prompts import CROP_OTHER, CROP_PROMPTS, VIEW_HARVEST, VIEW_LEAF, VIEW_PLANT, VIEW_PROMPTS
 
 __all__ = [
     "CROP_OTHER", "VIEW_HARVEST", "VIEW_LEAF", "VIEW_PLANT",

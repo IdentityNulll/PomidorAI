@@ -1,7 +1,9 @@
-import { AlertTriangle, Droplets, Mountain, Sprout, Sun, CalendarDays } from 'lucide-react';
+import { useState } from 'react';
+import { AlertTriangle, Pencil, Droplets, Mountain, Sprout, Sun, CalendarDays } from 'lucide-react';
 import { uz } from '../i18n/uz';
 import type { ScanDetail } from '../types';
 import { Card, ConfidenceBar, SectionTitle } from './ui';
+import { CorrectSheet } from './CorrectSheet';
 import { CONFIDENCE_FLOOR } from '../lib/confidence';
 
 /**
@@ -30,7 +32,18 @@ function ViewBadge({ view }: { view: string }) {
   );
 }
 
-export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: string }) {
+export function ResultView({
+  scan: initial,
+  imageUrl,
+}: {
+  scan: ScanDetail;
+  imageUrl?: string;
+}) {
+  // A correction replaces the result in place, so the card updates without
+  // re-fetching or bouncing the user back to the scan screen.
+  const [scan, setScan] = useState(initial);
+  const [correcting, setCorrecting] = useState(false);
+  const [thanks, setThanks] = useState(false);
   const plantSure = scan.plant.confidence >= CONFIDENCE_FLOOR;
   const predictions = scan.health.predictions;
   const healthSure = predictions.length > 0 && predictions[0].confidence >= CONFIDENCE_FLOOR;
@@ -69,7 +82,36 @@ export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: st
         ) : (
           <Unsure />
         )}
+
+        {thanks ? (
+          <p className="rounded-2xl bg-leaf-50 p-3 text-base text-leaf-800 dark:bg-leaf-500/10 dark:text-leaf-200">
+            {uz.correctSaved}
+          </p>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-base text-ink-500 dark:text-ink-400">{uz.correctPrompt}</span>
+            <button
+              onClick={() => setCorrecting(true)}
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-2xl px-3 text-base font-semibold text-leaf-700 hover:bg-leaf-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-leaf-500/40 dark:text-leaf-300 dark:hover:bg-night-700"
+            >
+              <Pencil className="h-4 w-4" aria-hidden="true" />
+              {uz.correctAction}
+            </button>
+          </div>
+        )}
       </Card>
+
+      {correcting && (
+        <CorrectSheet
+          scanId={scan.id}
+          onSaved={(updated) => {
+            setScan(updated);
+            setCorrecting(false);
+            setThanks(true);
+          }}
+          onCancel={() => setCorrecting(false)}
+        />
+      )}
 
       <Card className="space-y-4">
         <SectionTitle>{uz.resultHealthTitle}</SectionTitle>

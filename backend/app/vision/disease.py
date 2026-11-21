@@ -19,7 +19,8 @@ from dataclasses import dataclass
 
 from PIL.Image import Image
 
-from .labels import CROP_BY_PLANT_ID, DISEASE_UZ, HEALTH_PROMPTS, HEALTHY, SPECIES_PROMPTS
+from .labels import CROP_BY_PLANT_ID, DISEASE_UZ, HEALTHY
+from .prompts import HEALTH_PROMPTS, SPECIES_PROMPTS
 from .models import load
 from .thresholds import UNSURE_CAP
 

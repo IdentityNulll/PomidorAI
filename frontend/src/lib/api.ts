@@ -1,5 +1,5 @@
 import { uz } from '../i18n/uz';
-import type { ScanDetail, ScanListResponse } from '../types';
+import type { PlantOption, ScanDetail, ScanListResponse } from '../types';
 
 const API_BASE = '/api';
 
@@ -42,6 +42,22 @@ export function scanThumbUrl(scanId: string): string {
 
 export function scanImageUrl(scanId: string): string {
   return `${API_BASE}/scans/${scanId}/image`;
+}
+
+export async function getPlants(): Promise<PlantOption[]> {
+  const response = await fetch(`${API_BASE}/plants`);
+  if (!response.ok) throw await failure(response, uz.errorHistoryFailed);
+  return response.json();
+}
+
+export async function correctScan(scanId: string, plantId: string): Promise<ScanDetail> {
+  const response = await fetch(`${API_BASE}/scans/${scanId}/correct`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plantId }),
+  });
+  if (!response.ok) throw await failure(response, uz.errorCorrectFailed);
+  return response.json();
 }
 
 export async function deleteScan(scanId: string): Promise<void> {

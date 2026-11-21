@@ -47,6 +47,7 @@ from .vision import plantnet
 from .vision import thresholds
 from .vision import gates as clip_gate
 from .vision import crops
+from .vision import memory
 
 logger = logging.getLogger(__name__)
 
@@ -71,11 +72,13 @@ EMPTY_INFO = {
 }
 
 
-def analyze(image_path: str) -> dict:
+def analyze(image_path: str, corrections: list | None = None) -> dict:
     """Identify the plant in an image and assess its health.
 
     Args:
         image_path: absolute path to a normalised JPEG on local disk.
+        corrections: (plant_id, embedding) rows the user has corrected before.
+            Checked first - a close match overrides both models.
 
     Returns:
         {
@@ -94,7 +97,7 @@ def analyze(image_path: str) -> dict:
         return _unidentified()
 
     view, _view_confidence = crops.classify_view(image)
-    scientific, confidence, source = _identify(image)
+    scientific, confidence, source = _identify(image, corrections)
 
     leafy = clip_gate.leafiness(image)
     is_leaf = leafy >= LEAF_REQUIRED
@@ -125,16 +128,26 @@ def analyze(image_path: str) -> dict:
     }
 
 
-def _identify(image) -> tuple[str, float, str]:
-    """Combine the crop classifier and PlantNet into one answer.
+def _identify(image, corrections=None) -> tuple[str, float, str]:
+    """Combine remembered corrections, the crop classifier, and PlantNet.
 
     Neither alone is enough. The crop prompts read harvested produce and
     cultivated vegetables PlantNet has never seen; PlantNet covers the other
     7784 species and rescues cases the prompts get wrong - it correctly
     called a beet leaf Beta vulgaris where the prompts said potato.
 
+    A user correction outranks both models: if someone has already told the
+    app what a photo like this is, that is better evidence than any prompt.
+
     Returns ("" , 0.0, ...) when the photo is a plant we cannot name.
     """
+    remembered = memory.recall(image, corrections or [])
+    if remembered:
+        plant_id, score = remembered
+        curated = names.by_plant_id(plant_id)
+        if curated:
+            return curated["scientificName"], score, "correction"
+
     crop_id, crop_score = crops.identify_crop(image)[0]
     species, species_score = plantnet.identify(image, 1)[0]
 

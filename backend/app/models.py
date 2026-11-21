@@ -46,6 +46,17 @@ class ScanDetail(Scan):
     view: str = ""
 
 
+class PlantOption(BaseModel):
+    id: str
+    commonName: str
+    scientificName: str
+
+
+class CorrectionRequest(BaseModel):
+    # A plants.json id the user says is actually right.
+    plantId: str
+
+
 class ScanListResponse(BaseModel):
     scans: list[Scan]
     cursor: str | None = None
