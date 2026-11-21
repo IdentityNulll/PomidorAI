@@ -126,6 +126,7 @@ async def analyze_endpoint(
         plant=result["plant"],
         health=result["health"],
         info=result["info"],
+        view=result.get("view", ""),
         createdAt=scan.created_at,
     )
 
@@ -186,6 +187,7 @@ def get_scan(scan_id: str, request: Request, database: Session = Depends(db.get_
         plant=result["plant"],
         health=result["health"],
         info=result["info"],
+        view=result.get("view", ""),
         createdAt=scan.created_at,
     )
 

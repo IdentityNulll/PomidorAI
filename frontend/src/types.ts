@@ -32,8 +32,13 @@ export interface Scan {
   createdAt: string;
 }
 
+/** What the app read the photo as: hosil / o'simlik / barg, or '' if unknown. */
+export type PhotoView = string;
+
 export interface ScanDetail extends Scan {
   info: PlantInfo;
+  /** Empty for scans saved before the view classifier existed. */
+  view?: PhotoView;
 }
 
 export interface ScanListResponse {

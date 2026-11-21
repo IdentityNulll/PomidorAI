@@ -13,6 +13,23 @@ function displayName(plant: { commonName: string; scientificName: string }): str
   return plant.commonName || plant.scientificName;
 }
 
+/** The backend reports what kind of photo it read: hosil, o'simlik or barg. */
+const VIEW_LABELS: Record<string, string> = {
+  hosil: uz.viewHosil,
+  "o'simlik": uz.viewPlant,
+  barg: uz.viewLeaf,
+};
+
+function ViewBadge({ view }: { view: string }) {
+  const label = VIEW_LABELS[view];
+  if (!label) return null;
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-leaf-100 px-2.5 py-1 text-base font-medium text-leaf-700 dark:bg-leaf-500/15 dark:text-leaf-300">
+      {uz.viewLabel}: {label}
+    </span>
+  );
+}
+
 export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: string }) {
   const plantSure = scan.plant.confidence >= CONFIDENCE_FLOOR;
   const predictions = scan.health.predictions;
@@ -31,7 +48,10 @@ export function ResultView({ scan, imageUrl }: { scan: ScanDetail; imageUrl?: st
       )}
 
       <Card className="space-y-3">
-        <SectionTitle>{uz.resultPlantTitle}</SectionTitle>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <SectionTitle>{uz.resultPlantTitle}</SectionTitle>
+          <ViewBadge view={scan.view ?? ""} />
+        </div>
         {plantSure ? (
           <>
             <div>

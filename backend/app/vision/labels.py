@@ -226,43 +226,90 @@ VIEW_PROMPTS = {
     ],
 }
 
-# Produce prompts per plants.json id. Only crops whose harvest someone would
-# plausibly photograph; ornamentals and leafy herbs are deliberately absent,
-# so they fall through to the plant model instead of being forced into a
-# produce class.
-PRODUCE_PROMPTS = {
-    "tomato": ["ripe red tomatoes", "a pile of fresh tomatoes"],
-    "pepper": ["bell peppers", "a pile of red and green peppers"],
-    "pomegranate": ["pomegranate fruits", "a cut open pomegranate"],
-    "apple": ["apples in a basket", "a pile of fresh apples"],
-    "grape": ["bunches of grapes", "harvested grapes in a crate"],
-    "potato": [
-        "a pile of raw brown potato tubers",
-        "harvested potatoes with soil on them",
-    ],
-    "quince": ["quince fruits", "a ripe yellow quince"],
-    "carrot": ["a bunch of carrots", "harvested orange carrots"],
-    "onion": ["a pile of onions", "dry onion bulbs"],
-    "cucumber": ["fresh cucumbers", "a pile of green cucumbers"],
-    "beet": ["beetroots", "harvested red beets"],
-    "apricot": ["apricot fruits", "a bowl of fresh apricots"],
-    "wheat": ["wheat grain", "a pile of wheat grains"],
-    "maize": [
-        "yellow corn on the cob",
-        "maize cobs with rows of yellow kernels",
-    ],
-    "cotton": ["harvested raw cotton", "a pile of cotton bolls"],
-    "cherry": ["fresh cherries", "a bowl of red cherries"],
-    "peach": ["fresh peaches", "a pile of peaches"],
-    "strawberry": ["fresh strawberries", "a punnet of strawberries"],
-}
+# One class per curated crop, covering EVERY view of it: growing plant, leaf,
+# and harvested produce. A farmer photographs whichever is in front of them,
+# and a single class per crop means the answer does not depend on guessing
+# the view correctly first.
+#
+# Each entry is a plants.json id.
+CROP_OTHER = "__other__"
 
-# Produce is a closed set too, and softmax must pick something: without these
-# a crate of bananas becomes a confident "Olma". Same lesson as the plant
-# gate - give the model somewhere else to put the probability mass.
-PRODUCE_OTHER = "__other_produce__"
-PRODUCE_PROMPTS[PRODUCE_OTHER] = [
-    "bananas", "citrus fruit", "melons or watermelon", "aubergines",
-    "cabbage or lettuce", "beans or peas", "nuts", "berries in a punnet",
-    "bread or baked goods", "meat or fish", "a cooked meal",
-]
+CROP_PROMPTS = {
+    "tomato": [
+        "a tomato plant with round red or green tomatoes",
+        "tomato plant leaves",
+        "ripe red tomatoes picked",
+    ],
+    "pepper": [
+        "a pepper plant with a long green bell pepper hanging from it",
+        "a capsicum pepper fruit growing on a bush",
+        "pepper plant leaves",
+        "picked bell peppers",
+    ],
+    "grape": [
+        "a grape vine with bunches of grapes",
+        "grape vine leaves",
+        "picked bunches of grapes",
+    ],
+    "apple": ["an apple tree with apples on it", "apple tree leaves", "picked apples"],
+    "quince": [
+        "a quince tree with quince fruit on it",
+        "quince tree leaves",
+        "picked quince fruit",
+    ],
+    "pomegranate": [
+        "a pomegranate tree with fruit",
+        "pomegranate leaves",
+        "picked pomegranates",
+    ],
+    "apricot": ["an apricot tree with apricots", "apricot tree leaves", "picked apricots"],
+    "potato": [
+        "a potato plant growing in a field",
+        "potato plant leaves",
+        "harvested potato tubers",
+    ],
+    "wheat": ["a wheat field", "wheat plant leaves", "wheat grain"],
+    "cotton": ["a cotton plant with bolls", "cotton plant leaves", "harvested raw cotton"],
+    "maize": ["a maize plant growing", "maize plant leaves", "corn on the cob"],
+    "cucumber": [
+        "a cucumber plant with cucumbers",
+        "cucumber plant leaves",
+        "picked cucumbers",
+    ],
+    "onion": ["onion plants growing in soil", "onion green tops", "dry onion bulbs"],
+    "carrot": ["carrot plants growing in soil", "carrot leafy tops", "harvested carrots"],
+    "beet": [
+        "a beet plant with broad dark green leaves and red stems",
+        "beetroot leaves",
+        "harvested beetroots",
+    ],
+    "coriander": ["a coriander plant growing", "coriander leaves", "fresh coriander bunch"],
+    "dill": ["a dill plant growing", "feathery dill leaves", "fresh dill bunch"],
+    "cherry": ["a cherry tree with cherries", "cherry tree leaves", "picked cherries"],
+    "peach": ["a peach tree with peaches", "peach tree leaves", "picked peaches"],
+    "strawberry": [
+        "a strawberry plant with berries",
+        "strawberry leaves",
+        "picked strawberries",
+    ],
+    "rose": ["a rose bush with roses", "rose leaves", "cut roses"],
+    "chrysanthemum": [
+        "a chrysanthemum plant with flowers",
+        "chrysanthemum leaves",
+        "cut chrysanthemums",
+    ],
+    # Softmax must pick something. Without this, every weed and wildflower
+    # gets forced into the nearest crop - the original bug in this app.
+    CROP_OTHER: [
+        "a wild plant that is not a crop",
+        "a weed",
+        "an ornamental tree",
+        "grass",
+        "a houseplant",
+        "a wildflower",
+        "moss or fern",
+        "a cooked meal",
+        "a person or animal",
+        "a building or vehicle",
+    ],
+}

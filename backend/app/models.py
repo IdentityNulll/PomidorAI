@@ -41,6 +41,9 @@ class Scan(BaseModel):
 
 class ScanDetail(Scan):
     info: PlantInfo
+    # What the analyzer read the photo as: hosil / o'simlik / barg. Empty for
+    # scans stored before the view classifier existed.
+    view: str = ""
 
 
 class ScanListResponse(BaseModel):

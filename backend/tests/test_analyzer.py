@@ -12,7 +12,7 @@ from app.vision import disease as disease_model
 from app.vision import names
 from app.vision import plantnet
 from app.vision import gates as clip_gate
-from app.vision import harvest
+from app.vision import crops
 
 
 @pytest.fixture
@@ -25,25 +25,26 @@ def fake_models(monkeypatch, tmp_path):
 
     state = {
         "plantness": 0.9,
-        "view": (harvest.VIEW_PLANT, 0.9),
-        "produce": [("tomato", 0.9)],
+        "view": (crops.VIEW_PLANT, 0.9),
+        # Abstain by default so PlantNet drives; override per test.
+        "crop_prompts": [(crops.CROP_OTHER, 0.9)],
         "species": [("Solanum lycopersicum", 0.9)],
         "leafy": 0.0,
-        "crop": ("tomato", 0.9),
+        "leaf_crop": ("tomato", 0.9),
         "diseases": [{"label": "Fitoftoroz (kech kuyish)", "confidence": 0.8}],
         "fallback": [{"label": "Sog'lom", "confidence": 0.45}],
     }
 
     class Reading:
         def best_crop(self):
-            return state["crop"]
+            return state["leaf_crop"]
 
     monkeypatch.setattr(clip_gate, "plantness",
                         lambda _i: [("plant", state["plantness"]),
                                     ("not_plant", 1 - state["plantness"])])
     monkeypatch.setattr(clip_gate, "leafiness", lambda _i: state["leafy"])
-    monkeypatch.setattr(harvest, "classify_view", lambda _i: state["view"])
-    monkeypatch.setattr(harvest, "identify_produce", lambda _i: state["produce"])
+    monkeypatch.setattr(crops, "classify_view", lambda _i: state["view"])
+    monkeypatch.setattr(crops, "identify_crop", lambda _i: state["crop_prompts"])
     monkeypatch.setattr(plantnet, "identify", lambda _i, top=5: state["species"])
     monkeypatch.setattr(disease_model, "read_leaf", lambda _i: Reading())
     monkeypatch.setattr(disease_model, "from_reading", lambda _r, _p: state["diseases"])
@@ -97,7 +98,7 @@ def test_leaf_model_cannot_override_a_confident_species(fake_models):
     state, path = fake_models
     state["species"] = [("Beta vulgaris", 0.66)]
     state["leafy"] = 0.95
-    state["crop"] = ("tomato", 0.92)
+    state["leaf_crop"] = ("tomato", 0.92)
 
     result = analyzer.analyze(path)
 
@@ -109,7 +110,7 @@ def test_leaf_model_may_correct_an_unsure_species(fake_models):
     state, path = fake_models
     state["species"] = [("Paulownia tomentosa", 0.08)]
     state["leafy"] = 0.95
-    state["crop"] = ("tomato", 0.95)
+    state["leaf_crop"] = ("tomato", 0.95)
 
     result = analyzer.analyze(path)
 
@@ -120,7 +121,7 @@ def test_agreement_between_models_raises_confidence(fake_models):
     state, path = fake_models
     state["species"] = [("Solanum lycopersicum", 0.40)]
     state["leafy"] = 0.95
-    state["crop"] = ("tomato", 0.97)
+    state["leaf_crop"] = ("tomato", 0.97)
 
     assert analyzer.analyze(path)["plant"]["confidence"] == 0.97
 
@@ -141,7 +142,7 @@ def test_disease_survives_on_a_real_leaf(fake_models):
     state, path = fake_models
     state["species"] = [("Solanum lycopersicum", 0.8)]
     state["leafy"] = 0.95
-    state["crop"] = ("tomato", 0.98)
+    state["leaf_crop"] = ("tomato", 0.98)
     state["diseases"] = [{"label": "Fitoftoroz (kech kuyish)", "confidence": 0.97}]
 
     assert analyzer.analyze(path)["health"]["predictions"][0]["confidence"] == 0.97
@@ -162,7 +163,7 @@ def test_newly_covered_crop_uses_the_real_disease_model(fake_models):
     state, path = fake_models
     state["species"] = [("Capsicum annuum", 0.8)]
     state["leafy"] = 0.95
-    state["crop"] = ("pepper", 0.9)
+    state["leaf_crop"] = ("pepper", 0.9)
     state["diseases"] = [{"label": "Bakterial dog'lanish", "confidence": 0.88}]
 
     result = analyzer.analyze(path)
@@ -194,53 +195,72 @@ def test_every_curated_crop_resolves(fake_models):
         assert analyzer.analyze(path)["plant"]["commonName"] == entry["commonName"]
 
 
-def test_harvested_produce_uses_clip_not_plantnet(fake_models):
+def test_harvested_produce_uses_crop_prompts_not_plantnet(fake_models):
     """The hosil case.
 
     PlantNet is trained on plants in the ground and scored 0/7 on harvested
-    produce, answering "Lemna gibba" for a crate of grapes. A produce photo
-    must never reach it.
+    produce, answering "Lemna gibba" (duckweed) for a crate of grapes. The
+    crop prompts cover the harvest view, so they must win here.
     """
     state, path = fake_models
-    state["view"] = (harvest.VIEW_HARVEST, 0.8)
-    state["produce"] = [("grape", 0.97)]
-    state["species"] = [("Lemna gibba", 0.11)]  # what PlantNet would say
+    state["crop_prompts"] = [("grape", 0.97)]
+    state["species"] = [("Lemna gibba", 0.11)]
 
     result = analyzer.analyze(path)
 
-    assert result["view"] == harvest.VIEW_HARVEST
     assert result["plant"]["commonName"] == "Uzum"
     assert result["plant"]["confidence"] == 0.97
 
 
-def test_produce_outside_our_crops_is_not_forced_into_one(fake_models):
-    """Softmax must pick something, so bananas need somewhere to go."""
+def test_plantnet_wins_when_it_is_more_confident(fake_models):
+    """Regression: a beet leaf.
+
+    The crop prompts read it as potato; PlantNet correctly said Beta
+    vulgaris with higher confidence and must carry the answer.
+    """
     state, path = fake_models
-    state["view"] = (harvest.VIEW_HARVEST, 0.9)
-    state["produce"] = [(harvest.PRODUCE_OTHER, 0.8), ("apple", 0.1)]
+    state["crop_prompts"] = [("potato", 0.63)]
+    state["species"] = [("Beta vulgaris", 0.86)]
 
     result = analyzer.analyze(path)
 
-    assert result["plant"]["commonName"] == ""
-    assert result["plant"]["confidence"] < analyzer.UNSURE_BELOW
+    assert result["plant"]["commonName"] == "Lavlagi"
+    assert result["plant"]["confidence"] == 0.86
 
 
-def test_an_unsure_view_falls_back_to_the_plant_model(fake_models):
-    """Only a confident "this is produce" should bypass PlantNet."""
+def test_agreement_boosts_confidence(fake_models):
     state, path = fake_models
-    state["view"] = (harvest.VIEW_HARVEST, 0.2)
-    state["species"] = [("Cydonia oblonga", 0.7)]
-    state["produce"] = [("apple", 0.99)]
-
-    assert analyzer.analyze(path)["plant"]["commonName"] == "Behi"
-
-
-def test_growing_plant_still_goes_to_plantnet(fake_models):
-    state, path = fake_models
-    state["view"] = (harvest.VIEW_PLANT, 0.9)
-    state["species"] = [("Coriandrum sativum", 0.83)]
+    state["crop_prompts"] = [("quince", 0.51)]
+    state["species"] = [("Cydonia oblonga", 0.73)]
 
     result = analyzer.analyze(path)
 
-    assert result["view"] == harvest.VIEW_PLANT
-    assert result["plant"]["commonName"] == "Kashnich"
+    assert result["plant"]["commonName"] == "Behi"
+    assert result["plant"]["confidence"] == 0.73
+
+
+def test_a_plant_outside_the_curated_crops_falls_through_to_plantnet(fake_models):
+    state, path = fake_models
+    state["crop_prompts"] = [(crops.CROP_OTHER, 0.8)]
+    state["species"] = [("Paulownia tomentosa", 0.42)]
+
+    result = analyzer.analyze(path)
+
+    assert result["plant"]["scientificName"] == "Paulownia tomentosa"
+
+
+def test_view_is_reported_but_does_not_route(fake_models):
+    """The view is shown to the user; routing must not depend on it.
+
+    An earlier version routed on the view, and a pepper bush misread as
+    "hosil" came back as quince at 0.68.
+    """
+    state, path = fake_models
+    state["view"] = (crops.VIEW_HARVEST, 0.9)
+    state["crop_prompts"] = [("pepper", 0.9)]
+    state["species"] = [("Capsicum annuum", 0.2)]
+
+    result = analyzer.analyze(path)
+
+    assert result["view"] == crops.VIEW_HARVEST
+    assert result["plant"]["commonName"] == "Qalampir"

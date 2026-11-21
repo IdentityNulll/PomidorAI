@@ -90,4 +90,8 @@ export const uz = {
   back: 'Orqaga',
   healthy: "Sog'lom",
   unknownPlant: "Aniqlanmadi",
+  viewLabel: "Rasmda",
+  viewHosil: "Hosil",
+  viewPlant: "O'simlik",
+  viewLeaf: "Barg",
 } as const;

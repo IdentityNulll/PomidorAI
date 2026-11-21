@@ -108,3 +108,13 @@ def coverage() -> dict[str, int]:
         "species_with_uzbek_name": sum(1 for v in table.values() if v.get("uz")),
         "species_known": len(table),
     }
+
+
+@lru_cache(maxsize=1)
+def _id_by_scientific() -> dict[str, str]:
+    return {sci: entry["id"] for sci, entry in _plants().items()}
+
+
+def id_for_scientific(scientific: str) -> str | None:
+    """plants.json id for a scientific name, if we curate that crop."""
+    return _id_by_scientific().get(scientific)

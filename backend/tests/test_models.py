@@ -52,7 +52,7 @@ def test_analyze_returns_the_contract_on_a_real_image(tmp_path):
 
     result = analyze(str(path))
 
-    assert set(result) == {"plant", "health", "info"}
+    assert set(result) == {"view", "plant", "health", "info"}
     assert 0.0 <= result["plant"]["confidence"] <= 1.0
     assert 1 <= len(result["health"]["predictions"]) <= 3
 
@@ -79,7 +79,7 @@ def test_analyze_works_off_the_thread_that_loaded_the_models(tmp_path):
     with ThreadPoolExecutor(max_workers=1) as pool:
         result = pool.submit(analyze, str(path)).result()
 
-    assert set(result) == {"plant", "health", "info"}
+    assert set(result) == {"view", "plant", "health", "info"}
 
 
 def test_noise_is_not_confidently_called_a_crop(tmp_path):

@@ -123,28 +123,48 @@ models live in `backend/app/vision/`. Everything runs locally on CPU.
 
 | Model | Source | Job |
 | ----- | ------ | --- |
-| PlantNet mobilenetv4 | `PlantNet/mobilenetv4-conv-s-plantclef2024` (Apache-2.0) | **what plant is this** - 7806 species |
-| CLIP ViT-B/32 | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | two gates: "is this a plant at all" and "is this a close-up leaf" |
+| Crop prompts (CLIP) | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | the **22 curated crops**, from any view - growing plant, leaf, or harvested hosil |
+| PlantNet mobilenetv4 | `PlantNet/mobilenetv4-conv-s-plantclef2024` (Apache-2.0) | the other **7806 species**, and a second opinion on the 22 |
 | PlantVillage ViT | `kimcomehome/plantvillage-vit-leaf-disease` | disease, for 14 crops, on leaf close-ups |
+| CLIP gates | same CLIP | "is this a plant at all", "is this a close-up leaf", and which view to show the user |
 
-No training step. All three are pretrained and downloaded once
+No training step. All are pretrained and downloaded once
 (`backend/scripts/fetch_models.py`), then run offline.
 
-### Why three models
+### People photograph the hosil, not just the leaf
 
-Neither specialist can say "I don't know". PlantNet returns a species for a
-photo of a car; the PlantVillage model returns a disease for a photo of a
-rose. CLIP supplies the two abstentions:
+That one fact drove the design. A farmer points the camera at whatever is in
+front of them: the bush, a single leaf, or a crate of produce. Measured on
+seven photos of harvested produce:
 
-1. **plantness** - no plant in frame, stop and report nothing.
-2. **leafiness** - not a close-up leaf, so cap any disease claim into the
-   "not sure" band. The disease model was trained on single leaves against
-   plain backgrounds and is unreliable on field and whole-plant shots.
+| | PlantNet alone | crop prompts | combined (shipped) |
+| --- | --- | --- | --- |
+| harvested produce | **0/7** | 7/7 | **7/7** |
 
-On a close-up leaf the disease model may *also* correct the species, but only
-when PlantNet is itself unsure. It has 14 classes and cannot abstain, so on a
-beet leaf it confidently answers "Tomato" - letting that win turned a correct
-"Lavlagi 0.86" into "Pomidor 0.69" during development.
+PlantNet is trained on PlantCLEF - wild flora rooted in the ground. On a
+crate of grapes it answered *Lemna gibba* (duckweed); on a heap of potatoes,
+*Salvinia molesta* (an aquatic fern). It is also weak on cultivated
+vegetables, which PlantCLEF under-represents.
+
+So every curated crop gets **one class covering all three views**. The answer
+never depends on guessing the view first. An earlier attempt did route on the
+view, and a pepper bush misread as "hosil" came back as quince at 0.68.
+
+The two models are then **combined, not switched between**, because each is
+confidently wrong where the other is right:
+
+- crop prompts win on produce and cultivated vegetables,
+- PlantNet wins on wild and ornamental species - it correctly called a beet
+  leaf *Beta vulgaris* where the prompts said potato,
+- when they agree, confidence is boosted,
+- when the prompts abstain (`__other__`), PlantNet takes over.
+
+Two CLIP gates still guard the edges: **plantness** (no plant in frame → say
+nothing, since PlantNet names a species for a photo of a car) and
+**leafiness** (not a close-up leaf → cap any disease claim as unsure).
+
+The detected view - **Hosil / O'simlik / Barg** - is shown as a badge on the
+result, so the user can see what the app read the photo as.
 
 ### What the user sees, in three tiers
 
@@ -179,27 +199,33 @@ where it knew the answer. The app uses **0.30**
 `frontend/src/lib/confidence.ts`). The percentage is always shown next to the
 name, and the disclaimer is permanent.
 
-### Measured on 24 real garden photos
+### Measured on real photos
 
-Taken on an Uzbek phone in November - peppers, autumn foliage, weeds, herbs,
-roses - i.e. mostly *not* the eight crops the old model knew.
+**24 garden photos** taken on an Uzbek phone in November - peppers, autumn
+foliage, weeds, herbs, roses - plus **7 photos of harvested produce**.
 
-| | old 8-crop model | now |
-| --- | --- | --- |
-| named a plant | 20 of 24 | 10 of 24 |
-| named it correctly | ~2 | 10 |
+| | 8-crop model | PlantNet only | shipped |
+| --- | --- | --- | --- |
+| named a plant (of 24) | 20 | 10 | 23 |
+| correct on the 14 labelled | ~2 | 10 | **12** |
+| harvested produce (of 7) | - | 0 | **7** |
 
-The old model force-fitted everything into eight crops: pepper plants came
-back "Pomidor", weeds "Kartoshka", coriander "Uzum". Now it correctly names
-Kashnich (coriander), Lavlagi (beet), Behi (quince), Shivit (dill),
-Xrizantema and Itburun (rose) - and says nothing on the other 14 rather than
-guessing.
+Correct now: Qalampir (pepper hosil), Behi (quince), Kashnich (coriander),
+Lavlagi (beet), Shivit (dill), Xrizantema, Atirgul (rose), plus every produce
+photo.
+
+The remaining labelled failure is a **green bell pepper on the bush read as
+tomato**. Both are Solanaceae with similar leaves and a green fruit; the crop
+prompts and PlantNet both get it wrong, so it is a genuine limit rather than
+a tuning oversight.
 
 ### What it still cannot do
 
-- **Half the photos get no name.** Autumn foliage and distant whole-plant
-  shots are genuinely hard; the model abstains instead of guessing. Close-ups
-  of leaves or flowers work much better.
+- **Confident answers are now the norm, so wrong ones are louder.** The app
+  names a plant in 23 of 24 photos. Where it is wrong it is wrong with
+  conviction - the permanent disclaimer matters more than ever.
+- **Only the 22 curated crops are recognised from produce.** A crate of
+  something else should come back unnamed, not forced into the nearest crop.
 - **Disease only for 14 crops** (tomato, potato, apple, grape, pepper, maize,
   cherry, peach, strawberry, squash, orange, soybean, blueberry, raspberry)
   and only on **close-up single-leaf photos**. Everything else is reported as
@@ -330,6 +356,7 @@ pomidorAI/
 │   │   ├── main.py            # routes
 │   │   ├── analyzer.py        # THE SEAM - routing between the two models
 │   │   ├── vision/            # the models themselves
+│   │   │   ├── crops.py       # the 22 curated crops, any view + view badge
 │   │   │   ├── plantnet.py    # species: 7806 plants
 │   │   │   ├── gates.py       # CLIP: is-a-plant / is-a-leaf
 │   │   │   ├── disease.py     # PlantVillage ViT + weak CLIP fallback
