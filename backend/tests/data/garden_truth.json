@@ -1,0 +1,25 @@
+{
+  "_comment": "Ground truth for the owner's own garden photos, labelled by them. Photo numbers are the 1-based sort order of ~/Documents/pomidorai-test-images/newtests/*.jpg. Photos not listed were not labelled.",
+  "labels": {
+    "1": "pepper",
+    "2": "pepper",
+    "3": "quince",
+    "5": "pepper",
+    "6": "quince",
+    "7": "quince",
+    "8": "quince",
+    "9": "quince",
+    "10": "quince",
+    "11": "peach",
+    "13": "peach",
+    "14": "coriander",
+    "15": "chrysanthemum",
+    "16": "chrysanthemum",
+    "17": "coriander",
+    "18": "rose",
+    "19": "rose",
+    "20": "beet",
+    "23": "beet",
+    "24": "dill"
+  }
+}

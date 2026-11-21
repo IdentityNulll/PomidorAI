@@ -100,3 +100,42 @@ def test_noise_is_not_confidently_called_a_crop(tmp_path):
     result = analyze(str(path))
 
     assert result["plant"]["confidence"] < UNSURE_BELOW
+
+
+def test_labelled_garden_photos_do_not_regress(tmp_path):
+    """Accuracy floor on the owner's own labelled photos.
+
+    Prompt edits routinely fix one photo and break two others; only a scored
+    set catches that. Baseline when written: 15/20. The floor is set just
+    below so a real regression fails while noise does not.
+
+    Skipped unless the photos are present - they are personal and not in the
+    repo. Point POMIDORAI_GARDEN_DIR at them to run this.
+    """
+    import json
+    from pathlib import Path
+
+    directory = Path(
+        os.environ.get(
+            "POMIDORAI_GARDEN_DIR",
+            Path.home() / "Documents" / "pomidorai-test-images" / "newtests",
+        )
+    )
+    if not directory.is_dir():
+        pytest.skip(f"no labelled photos at {directory}")
+
+    from app.analyzer import analyze
+    from app.vision.thresholds import UNSURE_BELOW
+
+    truth_file = Path(__file__).parent / "data" / "garden_truth.json"
+    truth = json.loads(truth_file.read_text())["labels"]
+    files = sorted(directory.glob("*.jpg"))
+
+    correct = 0
+    for index, expected in truth.items():
+        result = analyze(str(files[int(index) - 1]))
+        plant = result["plant"]
+        got = plant["id"] if plant["confidence"] >= UNSURE_BELOW else ""
+        correct += got == expected
+
+    assert correct >= 14, f"{correct}/{len(truth)} - regression against the 15/20 baseline"

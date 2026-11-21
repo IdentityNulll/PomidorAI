@@ -201,23 +201,42 @@ name, and the disclaimer is permanent.
 
 ### Measured on real photos
 
-**24 garden photos** taken on an Uzbek phone in November - peppers, autumn
-foliage, weeds, herbs, roses - plus **7 photos of harvested produce**.
+Two labelled sets, scored by `backend/scripts/evaluate.py`:
+
+- **20 garden photos** taken on the owner's phone in November and labelled by
+  them (`backend/tests/data/garden_truth.json`). The photos themselves are
+  personal and not in the repo.
+- **7 photos of harvested produce** from Wikimedia Commons.
 
 | | 8-crop model | PlantNet only | shipped |
 | --- | --- | --- | --- |
-| named a plant (of 24) | 20 | 10 | 23 |
-| correct on the 14 labelled | ~2 | 10 | **12** |
-| harvested produce (of 7) | - | 0 | **7** |
+| garden photos | ~2/20 | 10/20 | **15/20** |
+| harvested produce | - | **0/7** | **7/7** |
+| total | - | 10/27 | **22/27 (81%)** |
 
-Correct now: Qalampir (pepper hosil), Behi (quince), Kashnich (coriander),
-Lavlagi (beet), Shivit (dill), Xrizantema, Atirgul (rose), plus every produce
-photo.
+Correct: Behi (quince, 6 photos), Kashnich (coriander), Lavlagi (beet),
+Xrizantema, Atirgul (rose), Shivit (dill), and every produce photo.
 
-The remaining labelled failure is a **green bell pepper on the bush read as
-tomato**. Both are Solanaceae with similar leaves and a green fruit; the crop
-prompts and PlantNet both get it wrong, so it is a genuine limit rather than
-a tuning oversight.
+**The five failures are all the same two confusions**, and both are real
+limits rather than untuned prompts:
+
+| photos | truth | answer | why |
+| ------ | ----- | ------ | --- |
+| 1, 2, 5 | pepper | tomato / quince | same family, similar leaves, green fruit |
+| 11, 13 | peach | quince | bare autumn branches; PlantNet gets the genus (*Prunus*) but at 0.08-0.15, too weak to win |
+
+Two fixes were tried and **rejected because they scored worse**: botanical
+leaf-shape descriptors (21/27, and it broke a photo that had been right),
+and gating on the top-1-to-top-2 margin - wrong answers turn out to have
+*large* margins (pepper→tomato wins by 0.53), so the margin carries no
+signal about correctness here.
+
+`backend/tests/test_models.py` asserts a floor of 14/20 on this set, so a
+prompt change that quietly regresses it fails the suite. Re-score with:
+
+```bash
+python backend/scripts/evaluate.py --garden <dir> --produce <dir>
+```
 
 ### What it still cannot do
 
@@ -372,7 +391,7 @@ pomidorAI/
 │   │   └── data/
 │   │       ├── plants.json    # placeholder content - needs agronomist review
 │   │       └── README.md
-│   ├── scripts/               # fetch_models.py, fetch_uz_names.py
+│   ├── scripts/               # fetch_models.py, fetch_uz_names.py, evaluate.py
 │   ├── tests/
 │   └── data/                  # gitignored: uploads/, pomidorai.db, secret.key
 └── frontend/
