@@ -87,6 +87,82 @@ at least 44×44 px, and content text is at least 16 px. Screenshots land in
 > `sudo npx playwright install-deps` and drop the `defaultBrowserType` override
 > in `playwright.config.ts` to test the real iOS engine.
 
+## Netlify frontend + backend on your own machine
+
+The default deployment is one process on one port (`./start.sh`). The split
+setup puts the UI on Netlify and keeps the API and the ~1 GB of models on a
+machine you control. Netlify cannot host the backend: it needs a long-running
+Python process and a gigabyte of weights, which serverless functions do not
+provide.
+
+Three things have to be true, and none of them are optional:
+
+1. **The API must be reachable over HTTPS.** A page served from
+   `https://*.netlify.app` cannot call `http://192.168.1.15:8000` - browsers
+   block mixed content outright.
+2. **Your machine must be reachable from the internet.** A LAN address only
+   works on your own Wi-Fi.
+3. **The session cookie must be cross-site.** `SameSite=Lax` is simply not
+   sent to a different site, so every scan would start a new session.
+
+### 1. Expose the backend over HTTPS
+
+A tunnel handles (1) and (2) together. Cloudflare Tunnel is free and needs no
+account for a quick trial:
+
+```bash
+./start.sh                      # terminal 1
+cloudflared tunnel --url http://localhost:8000   # terminal 2
+```
+
+It prints a public `https://<random>.trycloudflare.com` URL. Note it.
+
+> The quick-trial URL changes every restart. For something stable, set up a
+> named tunnel on a domain you own.
+
+### 2. Restart the backend in cross-site mode
+
+```bash
+POMIDORAI_CROSS_SITE=1 \
+POMIDORAI_ALLOWED_ORIGINS=https://your-site.netlify.app \
+./start.sh
+```
+
+- `POMIDORAI_CROSS_SITE=1` switches the cookie to `SameSite=None; Secure`.
+- `POMIDORAI_ALLOWED_ORIGINS` is an exact-match CORS allowlist. Never `*`:
+  with credentials enabled that would let any website on the internet drive
+  your API using the visitor's session cookie.
+
+Both default to off, so a normal single-origin deployment stays locked down.
+
+### 3. Point Netlify at the tunnel
+
+Set this in **Site configuration → Environment variables**, then redeploy:
+
+```
+VITE_API_BASE = https://<your-tunnel>.trycloudflare.com
+```
+
+No trailing slash, no `/api` - the frontend appends that. The value is baked
+in at build time, so changing it requires a new deploy.
+
+`netlify.toml` already pins the base directory, build command and SPA
+redirect, so connecting the repo needs no further configuration.
+
+### What this setup costs you
+
+- **The site only works while your PC is on**, awake, and running both
+  `start.sh` and the tunnel. Visitors otherwise get the offline message.
+- **Your machine is exposed to the internet** for as long as the tunnel runs.
+  The API has no authentication - anyone with the URL can upload images and
+  consume your CPU.
+- **Scans are slow over a tunnel**: every upload crosses the public internet
+  twice, on top of ~0.5 s of inference.
+- Anyone sharing the link shares your scan history scoping only by cookie.
+
+For a demo this is fine. For anything beyond that, put the backend on a small
+always-on server instead.
+
 ## How sessions work
 
 There are no accounts. On the first `POST /api/analyze`, the server mints a
@@ -439,6 +515,7 @@ pomidorAI/
 │   │       ├── plants.json    # placeholder content - needs agronomist review
 │   │       └── README.md
 │   ├── scripts/               # fetch_models.py, fetch_uz_names.py, evaluate.py
+├── netlify.toml               # frontend-only deploy; see the Netlify section
 │   ├── tests/
 │   └── data/                  # gitignored: uploads/, pomidorai.db, secret.key
 └── frontend/

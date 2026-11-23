@@ -11,6 +11,18 @@ COOKIE_NAME = "pomidorai_session"
 COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2  # 2 years
 _SALT = "pomidorai-session"
 
+# When the frontend is served from a different origin than the API - the
+# Netlify setup, where the page is on *.netlify.app and the API is a tunnel
+# to a home machine - browsers will not send a SameSite=Lax cookie at all.
+# SameSite=None is the only value that works cross-site, and browsers require
+# Secure (so HTTPS) alongside it.
+#
+# Defaults stay Lax: that is the stronger setting, and it is correct for the
+# normal single-origin deployment where FastAPI serves the frontend itself.
+_CROSS_SITE = os.environ.get("POMIDORAI_CROSS_SITE", "").lower() in {"1", "true", "yes"}
+COOKIE_SAMESITE = "none" if _CROSS_SITE else "lax"
+COOKIE_SECURE = _CROSS_SITE
+
 _SECRET_FILE = Path(__file__).parent.parent / "data" / "secret.key"
 
 
@@ -64,7 +76,8 @@ def ensure_session(request: Request, response: Response) -> str:
         sign(session_id),
         max_age=COOKIE_MAX_AGE,
         httponly=True,
-        samesite="lax",
+        samesite=COOKIE_SAMESITE,
+        secure=COOKIE_SECURE,
         path="/",
     )
     return session_id

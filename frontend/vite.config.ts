@@ -4,8 +4,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
-    // FastAPI serves this directory in production.
-    outDir: '../backend/static',
+    // Locally, FastAPI serves the bundle itself, so build straight into the
+    // directory it serves. On Netlify there is no FastAPI - only the static
+    // site - so build to the conventional dist/ that netlify.toml publishes.
+    outDir: process.env.NETLIFY ? 'dist' : '../backend/static',
     emptyOutDir: true,
   },
   server: {

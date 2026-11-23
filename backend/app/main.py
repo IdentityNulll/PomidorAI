@@ -3,12 +3,14 @@
 import base64
 import json
 import logging
+import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.concurrency import run_in_threadpool
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import and_, or_
@@ -38,6 +40,28 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="PomidorAI", lifespan=lifespan)
+
+# Cross-origin frontend (e.g. Netlify) talking to this API over a tunnel.
+# Set POMIDORAI_ALLOWED_ORIGINS to a comma-separated list of exact origins.
+# Empty by default, which keeps the normal same-origin deployment locked down:
+# no origin is allowed, because none needs to be.
+_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("POMIDORAI_ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+if _ALLOWED_ORIGINS:
+    logger.info("CORS enabled for %s", _ALLOWED_ORIGINS)
+    app.add_middleware(
+        CORSMiddleware,
+        # Exact origins only - never "*", which cannot carry credentials and
+        # would let any site drive this API with the user's session cookie.
+        allow_origins=_ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type"],
+    )
+
 app.include_router(corrections_routes.router)
 
 

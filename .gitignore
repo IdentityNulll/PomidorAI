@@ -36,3 +36,5 @@ frontend/playwright-report/
 
 # TypeScript incremental build cache
 frontend/tsconfig.tsbuildinfo
+frontend/*.tsbuildinfo
+frontend/vite.config.js
