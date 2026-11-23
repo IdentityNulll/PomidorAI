@@ -87,6 +87,36 @@ at least 44×44 px, and content text is at least 16 px. Screenshots land in
 > `sudo npx playwright install-deps` and drop the `defaultBrowserType` override
 > in `playwright.config.ts` to test the real iOS engine.
 
+## Demo on other people's phones
+
+```bash
+./demo.sh
+```
+
+Starts the backend if it is not already up, opens a public HTTPS tunnel,
+verifies the public URL actually answers, and writes a QR card to
+`~/Documents/pomidorai-qr/pomidorai-qr.png`. Anyone can scan it from any
+phone on any network, mobile data included. Ctrl+C stops whatever the script
+started.
+
+Needs `cloudflared` once:
+
+```bash
+curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
+  -o ~/.local/bin/cloudflared && chmod +x ~/.local/bin/cloudflared
+```
+
+The tunnel fronts the **whole app** - FastAPI already serves the frontend and
+the API on one port - so this needs none of the CORS or cross-site cookie
+setup the Netlify split below requires. Plain `./start.sh` underneath.
+
+Measured through a tunnel: a full scan round-trips in about 2.6 s.
+
+**The URL is random and dies with the tunnel**, so generate the QR on the day
+rather than in advance. Your machine is reachable from the internet, with no
+authentication on the API, for as long as the script runs - fine for a demo,
+not for leaving on.
+
 ## Netlify frontend + backend on your own machine
 
 The default deployment is one process on one port (`./start.sh`). The split
@@ -515,6 +545,7 @@ pomidorAI/
 │   │       ├── plants.json    # placeholder content - needs agronomist review
 │   │       └── README.md
 │   ├── scripts/               # fetch_models.py, fetch_uz_names.py, evaluate.py
+├── demo.sh                    # backend + public tunnel + QR code
 ├── netlify.toml               # frontend-only deploy; see the Netlify section
 │   ├── tests/
 │   └── data/                  # gitignored: uploads/, pomidorai.db, secret.key
