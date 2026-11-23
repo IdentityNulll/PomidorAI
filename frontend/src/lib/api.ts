@@ -1,12 +1,12 @@
 import { uz } from '../i18n/uz';
 import type { PlantOption, ScanDetail, ScanListResponse } from '../types';
+import { getBackendUrl } from './backend';
 
 /**
- * Same-origin by default: FastAPI serves this bundle itself in the normal
- * deployment. The Netlify build sets VITE_API_BASE to the public URL of a
- * tunnel pointing at the machine running the models.
+ * Resolved per call, not once at module load: the user can change the
+ * backend address in the Haqida tab without reloading the page.
  */
-const API_BASE = `${import.meta.env.VITE_API_BASE ?? ''}/api`;
+const api = (path: string) => `${getBackendUrl()}/api${path}`;
 
 /**
  * The session cookie is httpOnly, so it only travels if every request opts
@@ -25,7 +25,7 @@ export async function analyzeImage(image: Blob): Promise<ScanDetail> {
   const form = new FormData();
   form.append('image', image, 'scan.jpg');
 
-  const response = await fetch(`${API_BASE}/analyze`, {
+  const response = await fetch(api(`/analyze`), {
     ...CREDENTIALS,
     method: 'POST', body: form });
   if (!response.ok) throw await failure(response, uz.errorAnalysisFailed);
@@ -39,33 +39,33 @@ export async function getScans(
   const params = new URLSearchParams({ limit: String(limit) });
   if (cursor) params.set('cursor', cursor);
 
-  const response = await fetch(`${API_BASE}/scans?${params}`, CREDENTIALS);
+  const response = await fetch(api(`/scans?${params}`), CREDENTIALS);
   if (!response.ok) throw await failure(response, uz.errorHistoryFailed);
   return response.json();
 }
 
 export async function getScan(scanId: string): Promise<ScanDetail> {
-  const response = await fetch(`${API_BASE}/scans/${scanId}`, CREDENTIALS);
+  const response = await fetch(api(`/scans/${scanId}`), CREDENTIALS);
   if (!response.ok) throw await failure(response, uz.errorNotFound);
   return response.json();
 }
 
 export function scanThumbUrl(scanId: string): string {
-  return `${API_BASE}/scans/${scanId}/thumb`;
+  return api(`/scans/${scanId}/thumb`);
 }
 
 export function scanImageUrl(scanId: string): string {
-  return `${API_BASE}/scans/${scanId}/image`;
+  return api(`/scans/${scanId}/image`);
 }
 
 export async function getPlants(): Promise<PlantOption[]> {
-  const response = await fetch(`${API_BASE}/plants`, CREDENTIALS);
+  const response = await fetch(api(`/plants`), CREDENTIALS);
   if (!response.ok) throw await failure(response, uz.errorHistoryFailed);
   return response.json();
 }
 
 export async function correctScan(scanId: string, plantId: string): Promise<ScanDetail> {
-  const response = await fetch(`${API_BASE}/scans/${scanId}/correct`, {
+  const response = await fetch(api(`/scans/${scanId}/correct`), {
     ...CREDENTIALS,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -76,14 +76,14 @@ export async function correctScan(scanId: string, plantId: string): Promise<Scan
 }
 
 export async function deleteScan(scanId: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/scans/${scanId}`, {
+  const response = await fetch(api(`/scans/${scanId}`), {
     ...CREDENTIALS,
     method: 'DELETE' });
   if (!response.ok) throw await failure(response, uz.errorDeleteFailed);
 }
 
 export async function deleteAllScans(): Promise<void> {
-  const response = await fetch(`${API_BASE}/scans`, {
+  const response = await fetch(api(`/scans`), {
     ...CREDENTIALS,
     method: 'DELETE' });
   if (!response.ok) throw await failure(response, uz.errorDeleteFailed);

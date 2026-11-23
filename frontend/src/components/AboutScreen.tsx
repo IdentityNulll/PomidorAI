@@ -2,6 +2,7 @@ import { AlertTriangle, Camera, ShieldCheck, Sparkles, Leaf } from 'lucide-react
 import { uz } from '../i18n/uz';
 import { Card, SectionTitle } from './ui';
 import { Logo } from './Logo';
+import { BackendSetting } from './BackendSetting';
 
 export function AboutScreen() {
   const steps = [
@@ -50,6 +51,8 @@ export function AboutScreen() {
           {uz.aboutPrivacyText}
         </p>
       </Card>
+
+      <BackendSetting />
 
       <p className="flex gap-2.5 rounded-2xl bg-amber-50 p-4 text-base leading-relaxed text-amber-900 dark:bg-amber-500/10 dark:text-amber-200">
         <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
