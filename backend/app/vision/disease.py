@@ -19,9 +19,10 @@ from dataclasses import dataclass
 
 from PIL.Image import Image
 
-from .labels import CROP_BY_PLANT_ID, DISEASE_UZ, HEALTHY
+from .labels import CROP_BY_PLANT_ID, DISEASE_SLUG, HEALTHY, HEALTHY_SLUG
 from .prompts import HEALTH_PROMPTS, SPECIES_PROMPTS
 from .models import load
+from .guide import describe_disease
 from .thresholds import UNSURE_CAP
 
 PLANT_ID_BY_CROP = {crop: plant_id for plant_id, crop in CROP_BY_PLANT_ID.items()}
@@ -82,12 +83,15 @@ def from_reading(reading: LeafReading, plant_id: str) -> list[dict]:
 
     scored: dict[str, float] = {}
     for index, probability in zip(indices, renormalised):
-        uz = DISEASE_UZ.get(bundle.disease_labels[index], _humanise(bundle.disease_labels[index]))
-        # Several raw labels can share an Uzbek name; keep the strongest.
-        scored[uz] = max(scored.get(uz, 0.0), float(probability))
+        slug = DISEASE_SLUG.get(bundle.disease_labels[index], HEALTHY_SLUG)
+        # Several raw labels share a slug - black rot on an apple and on a
+        # grape is one disease to the farmer. Keep the strongest.
+        scored[slug] = max(scored.get(slug, 0.0), float(probability))
 
-    ranked = sorted(scored.items(), key=lambda item: item[1], reverse=True)[:3]
-    return [{"label": label, "confidence": round(value, 2)} for label, value in ranked]
+    # Up to 5, not 3: on tomato the model has ten classes, and the fourth
+    # candidate is often the one a farmer recognises from the description.
+    ranked = sorted(scored.items(), key=lambda item: item[1], reverse=True)[:5]
+    return [describe_disease(slug, round(value, 2)) for slug, value in ranked]
 
 
 def clip_fallback(image: Image, plant_id: str, scientific: str = "") -> list[dict]:
@@ -133,20 +137,18 @@ def clip_fallback(image: Image, plant_id: str, scientific: str = "") -> list[dic
         reverse=True,
     )
     return [
-        {"label": label, "confidence": round(min(value, FALLBACK_CONFIDENCE_CAP), 2)}
+        describe_disease(
+            HEALTHY_SLUG if label == HEALTHY else "noaniq",
+            round(min(value, FALLBACK_CONFIDENCE_CAP), 2),
+        )
         for label, value in ranked
     ]
 
 
 def unsure(predictions: list[dict]) -> list[dict]:
-    """Keep the ranking but cap confidence into the UI's unsure band."""
+    """Keep the ranking and the guidance, but cap the confidence."""
     return [
-        {"label": p["label"], "confidence": round(min(p["confidence"], FALLBACK_CONFIDENCE_CAP), 2)}
+        {**p, "confidence": round(min(p["confidence"], FALLBACK_CONFIDENCE_CAP), 2)}
         for p in predictions
     ]
 
-
-def _humanise(raw_label: str) -> str:
-    """Last-resort readable form if a label is missing from DISEASE_UZ."""
-    name = raw_label.split("___", 1)[-1]
-    return HEALTHY if name.lower() == "healthy" else name.replace("_", " ")

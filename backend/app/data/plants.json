@@ -3,230 +3,240 @@
     "id": "tomato",
     "commonName": "Pomidor",
     "scientificName": "Solanum lycopersicum",
-    "description": "Pomidor - O'zbekistonda eng ko'p ekiladigan sabzavotlardan biri. Issiqni yaxshi ko'radi va ochiq daladada ham, issiqxonada ham o'sadi.",
-    "howItGrows": "Ko'chat mart-aprel oylarida ekiladi. Gullashdan keyin 60-80 kun ichida hosil beradi. Novdalari tayanchga bog'lanadi.",
-    "water": "Haftada 2-3 marta, tuproqning ustki qatlami qurigach sug'oriladi. Barglariga suv tegmasin.",
-    "sunlight": "Kuniga kamida 6-8 soat to'g'ridan-to'g'ri quyosh nuri kerak.",
-    "soil": "Suv yaxshi o'tadigan, chirindiga boy yengil tuproq. Kislotaliligi 6.0-6.8.",
+    "description": "Pomidor - bog'da eng ko'p ekiladigan sabzavot. Issiqni va quyoshni yaxshi ko'radi. Sovuqqa umuman chidamaydi, shuning uchun sovuq o'tgandan keyin ekiladi.",
+    "howItGrows": "Mart-aprelda ko'chat ekiladi. Gullagandan keyin taxminan 2 oyda birinchi pomidor pishadi. Tupi uzun bo'lib o'sadi, shuning uchun qoziqqa bog'lab qo'yiladi.",
+    "water": "Haftada 2-3 marta. Tuproqning ustki qismi qurigach suv bering. Suvni tagidan quying - bargga tegsa kasallik tezroq yuqadi.",
+    "sunlight": "Kuniga kamida 6 soat ochiq quyosh. Soyada tupi cho'zilib ketadi, mevasi kam bo'ladi.",
+    "soil": "Yumshoq, chirindiga boy tuproq. Suv turib qolmasin - ildizi chiriydi.",
     "season": "Mart - Sentabr",
     "commonDiseases": [
-      "Fitoftoroz",
-      "Un-shudring",
-      "Barg dog'lanishi"
+      "fitoftoroz",
+      "alternarioz",
+      "septorioz",
+      "bakterial-doglanish",
+      "barg-mogori",
+      "orgimchakkana",
+      "sariq-barg-burishish",
+      "mozaika",
+      "nishonsimon-dog"
     ],
     "careTips": [
-      "Pastki barglarni va qo'shimcha novdalarni olib tashlang.",
-      "Tomirga sug'orib, barglarni ho'l qilmang.",
-      "Har yili bir joyga ekmang - almashlab ekish kasallikni kamaytiradi."
+      "Pastki barglarni olib tashlang - tuproqqa tegmasa kasallik kamayadi.",
+      "Qo'ltiqdan chiqqan ortiqcha novdalarni sindirib tashlang, kuch mevaga ketsin.",
+      "Har yili bir joyga ekmang. Kartoshkadan keyin ham ekmang - kasalliklari bir xil."
     ]
   },
   {
     "id": "cotton",
     "commonName": "G'o'za",
     "scientificName": "Gossypium hirsutum",
-    "description": "G'o'za (paxta) - O'zbekistonning asosiy qishloq xo'jaligi ekini. Tolasi to'qimachilik uchun ishlatiladi.",
-    "howItGrows": "Urug'i aprel oyida ekiladi. 180-220 kun davomida o'sadi va kuzda ko'sagi ochilgach terib olinadi.",
-    "water": "Mavsum davomida 4-6 marta sug'oriladi. Gullash va ko'sak tugish davrida suv eng zarur.",
-    "sunlight": "To'liq quyosh talab qiladi, soyada hosil kamayadi.",
-    "soil": "O'tloqi yoki bo'z tuproq. Sho'rlanishga nisbatan chidamli.",
+    "description": "G'o'za - paxta beradigan ekin. Uzun, issiq yozni talab qiladi.",
+    "howItGrows": "Aprelda ekiladi. Kuzda ko'saklari ochilib, ichidan oq paxta chiqadi. 6-7 oy o'sadi.",
+    "water": "Mavsumda bir necha marta. Gullash va ko'sak tugish davrida suv eng muhim.",
+    "sunlight": "To'liq quyosh, kun uzun bo'lsin.",
+    "soil": "Suv o'tadigan, sho'ri yuvilgan tuproq.",
     "season": "Aprel - Oktabr",
     "commonDiseases": [
-      "Vilt (Vertitsillyoz)",
-      "Gommoz",
-      "Ildiz chirishi"
+      "bitlar",
+      "orgimchakkana",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "Qatorlar orasini yumshatib, begona o'tlarni yo'qotib turing.",
-      "O'simlik uchini chilpish hosilni oshiradi.",
-      "Zararkunandalarni (o'rgimchakkana, shiralar) vaqtida tekshirib turing."
+      "Uchini chilpish hosilni oshiradi.",
+      "Zararkunandalarni muntazam tekshirib turing.",
+      "Ko'sak ochilgach quruq havoda tering."
     ]
   },
   {
     "id": "grape",
     "commonName": "Uzum",
     "scientificName": "Vitis vinifera",
-    "description": "Uzum - O'zbekistonda qadimdan o'stiriladigan mevali o'simlik. Yangi holda, mayiz va sharbat sifatida iste'mol qilinadi.",
-    "howItGrows": "Qalamcha yoki ko'chatdan ko'paytiriladi. 2-3 yildan keyin hosilga kiradi va o'nlab yillar meva beradi.",
-    "water": "Bahorda va yoz boshida chuqur sug'oriladi. Mevalar pishish oldidan suv kamaytiriladi.",
-    "sunlight": "To'liq quyosh kerak. Shingillar yaxshi yorishishi muhim.",
-    "soil": "Tosh-shag'alli, suv yaxshi o'tadigan tuproq. Nam turib qolishini yoqtirmaydi.",
+    "description": "Uzum - tokda o'sadigan meva. Yangi yeyiladi, mayiz qilinadi va sharbat olinadi.",
+    "howItGrows": "Ko'chatdan 2-3 yilda hosil beradi. Toki uzun bo'lib o'sadi, tayanchga tortiladi.",
+    "water": "Mavsumda muntazam. Pishish oldidan suvni kamaytiring - donasi shirin bo'ladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Qumoq, toshli tuproqni ham yaxshi ko'taradi.",
     "season": "Aprel - Oktabr",
     "commonDiseases": [
-      "Mildyu",
-      "Oidium",
-      "Kulrang chirish"
+      "mildyu",
+      "eska",
+      "qora-chirish",
+      "un-shudring",
+      "barg-kuyishi"
     ],
     "careTips": [
-      "Har yili qishda yoki erta bahorda butash shart.",
-      "Tokni simbog'ga tortib, havo almashinuvini ta'minlang.",
-      "Qishda tok tanasini sovuqdan ko'mib qo'ying."
+      "Bahorda kesish qiling - kesmasa hosil mayda bo'ladi.",
+      "Barglar qalin bo'lsa siyraklang, boshlarga quyosh tegsin.",
+      "Toki yerga tegmasin."
     ]
   },
   {
     "id": "apple",
     "commonName": "Olma",
     "scientificName": "Malus domestica",
-    "description": "Olma - eng keng tarqalgan mevali daraxt. O'zbekistonning barcha viloyatlarida o'stiriladi va uzoq saqlanadi.",
-    "howItGrows": "Payvand qilingan ko'chatdan o'stiriladi. 3-5 yildan keyin hosil beradi, 30 yildan ortiq meva qiladi.",
-    "water": "Oyda 2-3 marta chuqur sug'oriladi. Hosil tugish davrida suv ko'proq kerak.",
-    "sunlight": "Kuniga 6 soatdan ko'p quyosh nuri kerak.",
-    "soil": "Chirindiga boy, suv yaxshi o'tadigan o'rtacha og'ir tuproq.",
+    "description": "Olma - bog'imizdagi eng keng tarqalgan mevali daraxt. Uzoq yillar hosil beradi.",
+    "howItGrows": "Ko'chat ekilgandan 3-4 yil keyin meva bera boshlaydi. Kuzda pishadi.",
+    "water": "Oyiga 2-3 marta, lekin chuqur. Yosh daraxtga ko'proq suv kerak.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Suv o'tadigan, chuqur tuproq.",
     "season": "Aprel - Oktabr",
     "commonDiseases": [
-      "Olma qo'tiri",
-      "Un-shudring",
-      "Monilioz"
+      "olma-qotiri",
+      "qora-chirish",
+      "olma-zangi",
+      "monilioz",
+      "bitlar"
     ],
     "careTips": [
-      "Quruq va kasallangan shoxlarni erta bahorda kesib tashlang.",
-      "To'kilgan barg va mevalarni yig'ib yo'qoting - kasallik shu yerda qishlaydi.",
-      "Mevalar juda zich bo'lsa, bir qismini uzib tashlang."
+      "Qishda quruq va kasal shoxlarni kesing, toj ichiga quyosh kirsin.",
+      "Kuzda to'kilgan barglarni albatta yig'ing - kasallik o'sha yerda qishlaydi.",
+      "Meva ko'p tugsa bir qismini uzib tashlang, qolgani yirik bo'ladi."
     ]
   },
   {
     "id": "wheat",
     "commonName": "Bug'doy",
     "scientificName": "Triticum aestivum",
-    "description": "Bug'doy - asosiy don ekini. Non va boshqa oziq-ovqat mahsulotlari uchun O'zbekistonda keng maydonlarda ekiladi.",
-    "howItGrows": "Kuzda (oktabr-noyabr) yoki erta bahorda ekiladi. Kuzgi bug'doy iyun-iyul oylarida o'riladi.",
-    "water": "Mavsumda 3-4 marta sug'oriladi. Naychalash va boshoqlash davrida suv eng muhim.",
-    "sunlight": "To'liq quyosh talab qiladi.",
-    "soil": "O'tloqi va bo'z tuproqlar. Neytral kislotalilik qulay.",
-    "season": "Oktabr - Iyul",
+    "description": "Bug'doy - non uchun ekiladigan asosiy don. O'zbekistonda eng keng ekiladigan ekinlardan.",
+    "howItGrows": "Kuzda yoki erta bahorda ekiladi. Boshoq sarg'ayib, doni qattiqlashganda o'riladi.",
+    "water": "Mavsumda 3-4 marta. Boshoq to'layotgan paytda suv eng kerak.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Og'irroq, unumdor tuproqni ham ko'taradi.",
+    "season": "Oktabr - Iyun",
     "commonDiseases": [
-      "Zang kasalligi",
-      "Qorakuya",
-      "Septorioz"
+      "zang",
+      "septorioz"
     ],
     "careTips": [
-      "Sifatli va dorilangan urug' ishlatilsa kasallik kamayadi.",
-      "Bahorda azotli o'g'it bilan oziqlantiring.",
-      "Begona o'tlarga qarshi o'z vaqtida kurashing."
+      "Begona o'tlarni erta yo'qoting.",
+      "Bir xil yerga ketma-ket ekmang.",
+      "Boshoqlar sarg'ayib, doni tishda qattiq sinsa - o'rim vaqti."
     ]
   },
   {
     "id": "pomegranate",
     "commonName": "Anor",
     "scientificName": "Punica granatum",
-    "description": "Anor - issiqqa va qurg'oqchilikka chidamli mevali o'simlik. O'zbekistonning janubiy hududlarida ayniqsa yaxshi o'sadi.",
-    "howItGrows": "Qalamcha yoki ko'chatdan ko'paytiriladi. 3-4 yildan keyin hosil beradi, oktabr oyida meva pishadi.",
-    "water": "Oyda 2-3 marta sug'oriladi. Meva pishish oldidan sug'orish kamaytiriladi, aks holda meva yoriladi.",
-    "sunlight": "To'liq quyosh kerak, issiq joyni yaxshi ko'radi.",
-    "soil": "Qumoq yoki shag'alli tuproq. Sho'rlanishga chidamli.",
-    "season": "Aprel - Oktabr",
+    "description": "Anor - qizil donali meva beradigan buta-daraxt. Issiqni yaxshi ko'radi, qattiq sovuqdan qo'rqadi.",
+    "howItGrows": "Ko'chatdan 2-3 yilda hosil beradi. Kuzda pishadi.",
+    "water": "Mavsumda muntazam, lekin ortiqcha emas. Suv notekis bo'lsa meva yoriladi.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Suv o'tadigan qumoq tuproq.",
+    "season": "Aprel - Noyabr",
     "commonDiseases": [
-      "Meva chirishi",
-      "Barg dog'lanishi",
-      "Anor kuyasi"
+      "qora-chirish",
+      "bakterial-doglanish",
+      "kulrang-chirish"
     ],
     "careTips": [
-      "Qishda sovuq hududlarda butalarni egib ko'mib qo'ying.",
-      "Ildiz bo'g'zidan chiqqan bachkilarni olib tashlang.",
-      "Sug'orishni bir xil tartibda olib borsangiz meva yorilmaydi."
+      "Qishda sovuqdan himoya qiling - tupni bukib ko'mish eski usul.",
+      "Suvni bir tekis bering, meva yorilmaydi.",
+      "Ortiqcha tup novdalarini kesib turing."
     ]
   },
   {
     "id": "apricot",
     "commonName": "O'rik",
     "scientificName": "Prunus armeniaca",
-    "description": "O'rik - O'zbekistonda eng qadimiy mevali daraxtlardan biri. Yangi holda va quritilgan (qoqi) holda iste'mol qilinadi.",
-    "howItGrows": "Payvand qilingan ko'chatdan o'stiriladi. 3-4 yildan keyin hosil beradi, erta bahorda gullaydi.",
-    "water": "Oyda 2 marta chuqur sug'oriladi. Hosildan keyin ham suv berish kerak.",
-    "sunlight": "To'liq quyosh talab qiladi.",
-    "soil": "Suv yaxshi o'tadigan, ohakka boy tuproq. Nam turib qolishiga chidamsiz.",
+    "description": "O'rik - bahorda eng birinchi gullaydigan mevali daraxt. Quritilgani ham mashhur.",
+    "howItGrows": "Ko'chatdan 3-4 yilda meva beradi. Iyun-iyulda pishadi.",
+    "water": "Oyiga 2-3 marta. Meva to'layotganda suv kerak.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Suv o'tadigan, chuqur tuproq. Suv turib qolishini ko'tarmaydi.",
     "season": "Mart - Iyul",
     "commonDiseases": [
-      "Monilioz",
-      "Klyasterosporioz",
-      "Yelimlash (gommoz)"
+      "monilioz",
+      "bakterial-doglanish",
+      "qora-chirish"
     ],
     "careTips": [
-      "Gullash erta bo'lgani uchun bahorgi sovuqdan himoyalashga harakat qiling.",
-      "Kasallangan shoxlarni kesib, kesilgan joyni bog' malhami bilan bekiting.",
-      "Daraxt tagini toza tutib, to'kilgan mevalarni yig'ib tashlang."
+      "Erta gullaydi - bahorgi sovuq gulni urishi mumkin, panoh joyga eking.",
+      "Qurigan shox uchlarini sog'lom yerigacha kesing.",
+      "Chirigan mevalarni shoxda qoldirmang."
     ]
   },
   {
     "id": "potato",
     "commonName": "Kartoshka",
     "scientificName": "Solanum tuberosum",
-    "description": "Kartoshka - keng tarqalgan sabzavot ekini. O'zbekistonda yiliga ikki marta - bahorda va yozda ekish mumkin.",
-    "howItGrows": "Tugunakdan ekiladi. 70-100 kun ichida hosil beradi, poyasi sarg'aygach kovlab olinadi.",
-    "water": "Haftada 1-2 marta sug'oriladi. Tugunak tugish davrida suv eng zarur.",
-    "sunlight": "Kuniga 5-6 soat quyosh nuri kerak. Jazirama issiqni yoqtirmaydi.",
-    "soil": "Yengil, yumshoq va chirindiga boy tuproq.",
-    "season": "Fevral - Iyun / Iyul - Oktabr",
+    "description": "Kartoshka - yer ostida tugunak beradigan ekin. Salqin havoni yoqtiradi, jaziramada hosili kamayadi.",
+    "howItGrows": "Bahorda tugunak ekiladi. 70-100 kunda hosil tayyor. Guli to'kilgach tugunaklar to'la boshlaydi.",
+    "water": "Haftada 1-2 marta, lekin chuqur. Tugunak tugayotgan paytda suv eng kerak. Hosildan 2 hafta oldin suvni to'xtating.",
+    "sunlight": "To'liq quyosh.",
+    "soil": "Yumshoq, yengil tuproq. Qattiq yerda tugunak mayda bo'ladi.",
+    "season": "Mart - Avgust",
     "commonDiseases": [
-      "Fitoftoroz",
-      "Alternarioz",
-      "Quruq chirish"
+      "fitoftoroz",
+      "alternarioz",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "O'simlik 15-20 sm bo'lganda tagiga tuproq tortib qo'ying.",
-      "Kolorado qo'ngizini qo'lda yoki ruxsat etilgan dori bilan yo'qotib turing.",
-      "Hosilni quruq va qorong'i joyda saqlang."
+      "Tup o'sgach tagiga tuproq tortib qo'ying - yashil tugunak zaharli.",
+      "Yashil rangga kirgan tugunakni yemang.",
+      "Pomidordan keyin ekmang."
     ]
   },
   {
     "id": "pepper",
     "commonName": "Qalampir",
     "scientificName": "Capsicum annuum",
-    "description": "Qalampir - O'zbekiston bog'larida keng ekiladigan sabzavot. Shirin va achchiq navlari bor.",
-    "howItGrows": "Ko'chat aprel oyida ekiladi. Ekilgandan 70-90 kun keyin hosil beradi.",
-    "water": "Haftada 2-3 marta. Tuproq doim nam bo'lsin, lekin suv turib qolmasin.",
-    "sunlight": "Kuniga kamida 6 soat to'g'ridan-to'g'ri quyosh.",
-    "soil": "Chirindiga boy, yengil, suv yaxshi o'tadigan tuproq.",
+    "description": "Qalampir - issiqsevar sabzavot. Shirin va achchiq turlari bor, parvarishi bir xil.",
+    "howItGrows": "Aprelda ko'chat ekiladi. 70-90 kunda hosil beradi. Tupi past va shoxli bo'ladi.",
+    "water": "Haftada 2-3 marta. Tuproq doim sal nam tursin, lekin botqoq bo'lmasin.",
+    "sunlight": "Kuniga kamida 6 soat quyosh. Shamoldan panoh joy yaxshi.",
+    "soil": "Yengil, chirindili tuproq.",
     "season": "Aprel - Sentabr",
     "commonDiseases": [
-      "Bakterial dog'lanish",
-      "Un-shudring",
-      "Bitlar"
+      "bakterial-doglanish",
+      "un-shudring",
+      "bitlar",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "Shamoldan himoyalangan joyga eking.",
-      "Hosilni muntazam yig'ing - yangi mevalar ko'proq tugadi.",
-      "Pomidordan keyin bir joyga ekmang."
+      "Pishgan qalampirni tez-tez uzib turing - yangi mevalar ko'proq tugadi.",
+      "Shoxlari mo'rt, shamolda sinadi - tayanch qo'ying.",
+      "Pomidor ekilgan yerga ketma-ket ekmang."
     ]
   },
   {
     "id": "coriander",
     "commonName": "Kashnich",
     "scientificName": "Coriandrum sativum",
-    "description": "Kashnich - oshxonada keng ishlatiladigan ko'kat. Barglari va urug'i ishlatiladi.",
-    "howItGrows": "Urug'dan to'g'ridan-to'g'ri ekiladi. 30-45 kunda ko'kati tayyor bo'ladi.",
-    "water": "Tuproq ustki qatlami qurigach sug'oriladi. Haftada 2 marta yetarli.",
-    "sunlight": "Yarim soya yoki to'liq quyosh. Juda issiqda tez gullab ketadi.",
-    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "description": "Kashnich - oshxonada doim kerak bo'ladigan xushbo'y ko'kat. Barglari va urug'i ishlatiladi.",
+    "howItGrows": "Urug'dan to'g'ridan-to'g'ri ekiladi. 30-45 kunda ko'kati tayyor.",
+    "water": "Tuproq ustki qismi qurigach sug'oring. Haftada 2 marta yetarli.",
+    "sunlight": "Yarim soya yoki quyosh. Jaziramada tez gullab ketadi, bargi qattiqlashadi.",
+    "soil": "Yengil, suv o'tadigan tuproq.",
     "season": "Mart - May / Avgust - Oktabr",
     "commonDiseases": [
-      "Un-shudring",
-      "Ildiz chirishi",
-      "Bitlar"
+      "un-shudring",
+      "ildiz-chirishi",
+      "bitlar"
     ],
     "careTips": [
-      "Har 2-3 haftada yangidan eking - uzluksiz hosil bo'ladi.",
-      "Issiq havoda soyaroq joyga eking.",
-      "Gullashdan oldin barglarini yig'ing."
+      "Har 2-3 haftada yangidan eking - uzluksiz ko'kat bo'ladi.",
+      "Issiqda soyaroq joyga eking.",
+      "Gullashdan oldin barglarini yig'ib oling."
     ]
   },
   {
     "id": "dill",
     "commonName": "Shivit",
     "scientificName": "Anethum graveolens",
-    "description": "Shivit - milliy taomlarda ishlatiladigan xushbo'y ko'kat.",
-    "howItGrows": "Urug'dan ekiladi, 40-60 kunda yig'ishtiriladi. Sovuqqa chidamli.",
+    "description": "Shivit - milliy taomlarga qo'shiladigan xushbo'y ko'kat. Patsimon ingichka bargi bor.",
+    "howItGrows": "Urug'dan ekiladi, 40-60 kunda tayyor. Sovuqqa ancha chidamli.",
     "water": "Haftada 1-2 marta. Ortiqcha suvni yoqtirmaydi.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Qumoq, yengil tuproq.",
+    "soil": "Yengil qumoq tuproq.",
     "season": "Mart - Oktabr",
     "commonDiseases": [
-      "Un-shudring",
-      "Barg dog'lanishi",
-      "Bitlar"
+      "un-shudring",
+      "bitlar",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "Bir joyga qalin ekmang.",
-      "Urug' uchun bir nechta tupni qoldiring.",
+      "Qalin ekmang, siyrak bo'lsin.",
+      "Urug' olish uchun bir nechta tupni qoldiring.",
       "Bodring yonida yaxshi o'sadi."
     ]
   },
@@ -234,167 +244,168 @@
     "id": "beet",
     "commonName": "Lavlagi",
     "scientificName": "Beta vulgaris",
-    "description": "Lavlagi - ildizmevasi va bargi ishlatiladigan sabzavot. Sovuqqa chidamli.",
-    "howItGrows": "Urug'dan ekiladi. 90-110 kunda ildizmevasi yetiladi.",
-    "water": "Haftada 1-2 marta chuqur sug'oriladi.",
+    "description": "Lavlagi - yer ostida yirik qizil ildiz beradigan sabzavot. Yosh barglari ham yeyiladi.",
+    "howItGrows": "Urug'dan ekiladi, 3-4 oyda yetiladi. Sovuqqa ancha chidamli.",
+    "water": "Haftada 1-2 marta chuqur sug'orish.",
     "sunlight": "To'liq quyosh yoki yengil soya.",
     "soil": "Chuqur ishlangan, toshsiz tuproq.",
     "season": "Mart - Oktabr",
     "commonDiseases": [
-      "Serkosporoz",
-      "Ildiz chirishi",
-      "Barg dog'lanishi"
+      "serkosporoz",
+      "ildiz-chirishi",
+      "bitlar"
     ],
     "careTips": [
-      "Ko'chatlarni siyraklang - ildiz yirik bo'ladi.",
-      "Yosh barglarini salatga ishlating.",
-      "Tuproqni qatqaloqlanishdan saqlang."
+      "Ko'chatlar zich chiqsa siyraklang - joy bo'lmasa ildiz mayda qoladi.",
+      "Tuproq qatqaloq bo'lib qolmasin, yumshatib turing.",
+      "Yosh barglarini salatga ishlating."
     ]
   },
   {
     "id": "quince",
     "commonName": "Behi",
     "scientificName": "Cydonia oblonga",
-    "description": "Behi - O'zbekistonda keng tarqalgan mevali daraxt. Mevasi murabbo va taomlarga ishlatiladi.",
-    "howItGrows": "Ko'chatdan o'stiriladi, 3-4 yildan keyin hosil beradi. Kuzda pishadi.",
-    "water": "Oyiga 2-3 maShivitrta chuqur sug'oriladi. Yosh daraxt ko'proq suv talab qiladi.",
+    "description": "Behi - sariq, xushbo'y mevali daraxt. Mevasi qattiq, ko'pincha murabbo va taomga ishlatiladi.",
+    "howItGrows": "Ko'chatdan 3-4 yilda hosilga kiradi. Mevasi kech kuzda pishadi.",
+    "water": "Oyiga 2-3 marta chuqur sug'orish.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Og'irroq, nam saqlaydigan tuproqni ham ko'taradi.",
+    "soil": "Nam saqlaydigan og'irroq tuproqqa ham chidaydi.",
     "season": "Aprel - Noyabr",
     "commonDiseases": [
-      "Monilioz",
-      "Olma qo'tiri",
-      "Bakterial kuyish"
+      "olma-qotiri",
+      "monilioz",
+      "qora-chirish"
     ],
     "careTips": [
-      "Qishda quruq va kasal shoxlarni kesing.",
-      "To'kilgan barg va mevalarni yig'ib yo'q qiling.",
-      "Hosilni to'liq sarg'aygach uzing."
+      "Mevani to'liq sarg'aygach uzing.",
+      "To'kilgan barg va mevalarni yig'ib tashlang.",
+      "Qishda kasal shoxlarni kesing."
     ]
   },
   {
     "id": "cucumber",
     "commonName": "Bodring",
     "scientificName": "Cucumis sativus",
-    "description": "Bodring - issiqsevar sabzavot, O'zbekistonda ochiq dalada ham, issiqxonada ham ekiladi.",
-    "howItGrows": "Urug'dan ekiladi, 45-60 kunda hosil beradi.",
-    "water": "Har kuni yoki kun ora. Suv yetishmasa mevasi achchiq bo'ladi.",
+    "description": "Bodring - tez o'sadigan, issiqsevar sabzavot. Suvni juda yaxshi ko'radi.",
+    "howItGrows": "Mayda urug'dan ekiladi. 45-60 kunda birinchi bodring uziladi. Chirmashib o'sadi.",
+    "water": "Deyarli har kuni. Suv yetmasa bodring achchiq bo'lib qoladi.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Chirindiga boy, iliq, yengil tuproq.",
+    "soil": "Iliq, yumshoq, chirindiga boy tuproq.",
     "season": "May - Sentabr",
     "commonDiseases": [
-      "Un-shudring",
-      "Mildyu",
-      "O'rgimchakkana"
+      "mildyu",
+      "un-shudring",
+      "orgimchakkana",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "Tayanchga chiqaring - mevasi toza bo'ladi.",
-      "Iliq suv bilan sug'oring.",
-      "Hosilni har 1-2 kunda yig'ing."
+      "Tayanchga chiqaring - mevasi toza va to'g'ri bo'ladi.",
+      "Iliq suv bilan sug'oring, sovuq suv o'sishni to'xtatadi.",
+      "Har 1-2 kunda uzib turing, yirik qolsa tup charchaydi."
     ]
   },
   {
     "id": "onion",
     "commonName": "Piyoz",
     "scientificName": "Allium cepa",
-    "description": "Piyoz - deyarli har bir taomda ishlatiladigan asosiy sabzavot.",
-    "howItGrows": "Urug' yoki sevkadan ekiladi. 100-130 kunda yetiladi.",
-    "water": "Haftada 1 marta. Hosil yig'ishdan 2-3 hafta oldin to'xtatiladi.",
+    "description": "Piyoz - deyarli har bir taomga kerak. Yer ostida boshcha hosil qiladi.",
+    "howItGrows": "Urug' yoki mayda sevkadan ekiladi. 3-4 oyda yetiladi. Bargi yotib qolsa - tayyor.",
+    "water": "Haftada 1 marta. Yig'ishdan 2-3 hafta oldin suvni butunlay to'xtating.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "soil": "Yengil, suv o'tadigan tuproq.",
     "season": "Mart - Avgust",
     "commonDiseases": [
-      "Mildyu",
-      "Bo'yin chirishi",
-      "Piyoz pashshasi"
+      "mildyu",
+      "ildiz-chirishi",
+      "kulrang-chirish"
     ],
     "careTips": [
-      "Begona o'tlardan toza tuting.",
-      "Bargi yotgach sug'orishni to'xtating.",
-      "Quruq joyda saqlang."
+      "Begona o'tlardan toza tuting - piyoz ular bilan kurasha olmaydi.",
+      "Bargi yotgach sug'ormang, aks holda saqlanmaydi.",
+      "Quruq, salqin joyda saqlang."
     ]
   },
   {
     "id": "carrot",
     "commonName": "Sabzi",
     "scientificName": "Daucus carota",
-    "description": "Sabzi - palov va boshqa taomlar uchun asosiy ildizmeva.",
-    "howItGrows": "Urug'dan ekiladi, 90-120 kunda yetiladi.",
-    "water": "Haftada 1-2 marta bir tekis sug'oriladi.",
+    "description": "Sabzi - palovning asosiy sabzavoti. Yer ostida uzun ildiz beradi.",
+    "howItGrows": "Urug'dan ekiladi. Juda sekin unadi - 2-3 hafta kutish kerak. 3-4 oyda yetiladi.",
+    "water": "Haftada 1-2 marta bir tekis. Suv goh ko'p goh kam bo'lsa sabzi yoriladi.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Chuqur, yumshoq, toshsiz qumoq tuproq.",
+    "soil": "Chuqur, yumshoq, toshsiz tuproq. Tosh bo'lsa sabzi qiyshayadi.",
     "season": "Mart - Oktabr",
     "commonDiseases": [
-      "Alternarioz",
-      "Ildiz chirishi",
-      "Sabzi pashshasi"
+      "alternarioz",
+      "ildiz-chirishi"
     ],
     "careTips": [
-      "Ko'chatlarni siyraklang.",
-      "Yangi go'ng solmang - ildiz shoxlanadi.",
-      "Tuproqni bir tekis nam tuting."
+      "Siyraklang - zich bo'lsa ingichka qoladi.",
+      "Yangi go'ng solmang, ildiz shoxlanib ketadi.",
+      "Yelkasi yerdan chiqsa ustini tuproq bilan yoping."
     ]
   },
   {
     "id": "maize",
     "commonName": "Makkajo'xori",
     "scientificName": "Zea mays",
-    "description": "Makkajo'xori - don va yem uchun ekiladigan asosiy ekin.",
-    "howItGrows": "Urug'dan ekiladi, 90-120 kunda pishadi.",
-    "water": "Mavsumda 4-6 marta. Ro'vak chiqarish davrida suv eng muhim.",
+    "description": "Makkajo'xori - baland bo'yli don ekini. Soni va yemi uchun ekiladi.",
+    "howItGrows": "Aprelda urug' ekiladi, 3-4 oyda pishadi. Bo'yi odam bo'yiga yetadi.",
+    "water": "Mavsumda 4-6 marta. Ro'vak chiqarayotganda suv eng muhim.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Chirindiga boy, chuqur tuproq.",
+    "soil": "Chuqur, chirindiga boy tuproq.",
     "season": "Aprel - Sentabr",
     "commonDiseases": [
-      "Zang kasalligi",
-      "Shimoliy barg kuyishi",
-      "Serkosporoz"
+      "zang",
+      "shimoliy-barg-kuyishi",
+      "serkosporoz"
     ],
     "careTips": [
-      "Bir qator emas, blok qilib eking - changlanish yaxshi bo'ladi.",
-      "Tagiga tuproq tortib qo'ying.",
-      "Yon novdalarni olib tashlamang."
+      "Bir qator emas, to'rtburchak qilib eking - changlanishi yaxshi bo'ladi, so'ta to'ladi.",
+      "Tagiga tuproq tortib qo'ying, shamolda ag'darilmaydi.",
+      "Pastdan chiqqan yon novdalarni olmang, ular ham foyda beradi."
     ]
   },
   {
     "id": "rose",
     "commonName": "Atirgul",
     "scientificName": "Rosa",
-    "description": "Atirgul - bog'larda eng ko'p ekiladigan manzarali gul.",
-    "howItGrows": "Ko'chat yoki qalamchadan. Bahordan kuzgacha gullaydi.",
-    "water": "Haftada 2 marta tagidan sug'oriladi. Bargini ho'llamang.",
+    "description": "Atirgul - hovlida eng ko'p ekiladigan manzarali gul. Bahordan kuzgacha gullaydi.",
+    "howItGrows": "Ko'chat yoki qalamchadan ko'payadi. Ekilgan yili gullay boshlaydi.",
+    "water": "Haftada 2 marta, tagidan. Bargga suv sepmang.",
     "sunlight": "Kuniga kamida 6 soat quyosh.",
-    "soil": "Chirindiga boy, suv yaxshi o'tadigan tuproq.",
+    "soil": "Chirindiga boy, suv o'tadigan tuproq.",
     "season": "Aprel - Oktabr",
     "commonDiseases": [
-      "Un-shudring",
-      "Qora dog'",
-      "Zang"
+      "un-shudring",
+      "qora-chirish",
+      "zang",
+      "bitlar"
     ],
     "careTips": [
       "Erta bahorda kesing.",
-      "So'lgan gullarni olib tashlang.",
-      "Tagini ochiq va shamollaydigan qilib saqlang."
+      "So'lgan gullarni uzib turing - yangilari ko'proq chiqadi.",
+      "Tup tagini ochiq tuting, havo yursin."
     ]
   },
   {
     "id": "chrysanthemum",
     "commonName": "Xrizantema",
     "scientificName": "Chrysanthemum indicum",
-    "description": "Xrizantema - kuzda gullaydigan manzarali gul, sovuqqa chidamli.",
-    "howItGrows": "Qalamcha yoki tup bo'lish orqali. Sentabr-noyabrda gullaydi.",
-    "water": "Haftada 2 marta. Gullash davrida ko'proq.",
+    "description": "Xrizantema - kuzda, boshqa gullar so'lganda gullaydigan manzarali gul. Sovuqqa chidamli.",
+    "howItGrows": "Qalamcha yoki tupni bo'lish orqali ko'payadi. Sentabr-noyabrda gullaydi.",
+    "water": "Haftada 2 marta. Gullash paytida ko'proq.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Suv yaxshi o'tadigan, o'rtacha unumdor tuproq.",
+    "soil": "Suv o'tadigan, o'rtacha unumdor tuproq.",
     "season": "Sentabr - Noyabr",
     "commonDiseases": [
-      "Un-shudring",
-      "Barg dog'lanishi",
-      "Bitlar"
+      "un-shudring",
+      "zang",
+      "bitlar"
     ],
     "careTips": [
-      "Yozda uchini chimdib turing - ko'p shoxlaydi.",
-      "Har 2-3 yilda tupini bo'lib o'tqazing.",
+      "Yozda uchini chimdib turing - ko'p shoxlaydi, gul ko'p bo'ladi.",
+      "Har 2-3 yilda tupni bo'lib o'tqazing.",
       "Gullagandan keyin pastdan kesing."
     ]
   },
@@ -402,63 +413,64 @@
     "id": "cherry",
     "commonName": "Gilos",
     "scientificName": "Prunus avium",
-    "description": "Gilos - erta yozda pishadigan mevali daraxt, O'zbekistonda keng tarqalgan.",
-    "howItGrows": "Ko'chatdan o'stiriladi, 3-4 yilda hosil beradi. May-iyunda pishadi.",
-    "water": "Oyiga 2-3 marta chuqur sug'oriladi. Meva pishish davrida ortiqcha suv bermang - meva yorilади.",
+    "description": "Gilos - erta yozda pishadigan shirin meva. Qushlar ham juda yaxshi ko'radi.",
+    "howItGrows": "Ko'chatdan 3-4 yilda hosil beradi. May-iyunda pishadi.",
+    "water": "Oyiga 2-3 marta chuqur sug'orish. Pishish oldidan ko'p suv bermang - meva yoriladi.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Suv yaxshi o'tadigan, chuqur tuproq.",
+    "soil": "Suv o'tadigan, chuqur tuproq.",
     "season": "Aprel - Iyun",
     "commonDiseases": [
-      "Un-shudring",
-      "Monilioz",
-      "Barg teshilishi"
+      "un-shudring",
+      "monilioz",
+      "kulrang-chirish"
     ],
     "careTips": [
-      "Hosildan keyin shakl beruvchi kesish qiling.",
       "Qushlardan to'r bilan himoyalang.",
-      "Yorilishning oldini olish uchun sug'orishni bir tekis qiling."
+      "Hosildan keyin shakl beruvchi kesish qiling.",
+      "Suvni bir tekis bering."
     ]
   },
   {
     "id": "peach",
     "commonName": "Shaftoli",
     "scientificName": "Prunus persica",
-    "description": "Shaftoli - issiqsevar mevali daraxt. O'zbekiston iqlimida yaxshi hosil beradi.",
-    "howItGrows": "Ko'chatdan, 2-3 yilda hosilga kiradi. Iyul-avgustda pishadi.",
-    "water": "Haftada 1 marta chuqur sug'orish. Meva to'lishish davrida muhim.",
-    "sunlight": "To'liq quyosh, shamoldan himoyalangan joy.",
-    "soil": "Yengil, suv yaxshi o'tadigan tuproq.",
+    "description": "Shaftoli - mayin po'stli, shirin meva. Issiqni yaxshi ko'radi.",
+    "howItGrows": "Ko'chatdan 2-3 yilda hosilga kiradi. Iyul-avgustda pishadi.",
+    "water": "Haftada 1 marta chuqur. Meva to'layotganda suv eng muhim.",
+    "sunlight": "To'liq quyosh, shamoldan panoh joy.",
+    "soil": "Yengil, suv o'tadigan tuproq.",
     "season": "Mart - Avgust",
     "commonDiseases": [
-      "Bakterial dog'lanish",
-      "Barg burishishi",
-      "Monilioz"
+      "bakterial-doglanish",
+      "monilioz",
+      "bitlar"
     ],
     "careTips": [
-      "Har yil kuchli kesish qiling - shaftoli yangi novdada hosil beradi.",
-      "Mevalarni siyraklang.",
-      "Bahorda gullashdan oldin dorilang."
+      "Har yili kuchli kesing - shaftoli faqat yangi novdada meva beradi.",
+      "Meva zich tugsa siyraklang.",
+      "To'kilgan chirigan mevalarni yig'ing."
     ]
   },
   {
     "id": "strawberry",
     "commonName": "Qulupnay",
     "scientificName": "Fragaria ananassa",
-    "description": "Qulupnay - past bo'yli ko'p yillik rezavor o'simlik. Bahorda hosil beradi.",
-    "howItGrows": "Ko'chat yoki mo'ylovdan ko'paytiriladi. Ekilgan yili hosil beradi.",
-    "water": "Haftada 2 marta. Tomchilatib sug'orish eng yaxshisi.",
+    "description": "Qulupnay - past bo'yli, bahorda pishadigan rezavor. Bir ekilsa bir necha yil hosil beradi.",
+    "howItGrows": "Ko'chat yoki mo'ylovdan ko'payadi. Ekilgan yiliyoq hosil beradi.",
+    "water": "Haftada 2 marta. Tagidan sug'oring, meva ho'l bo'lmasin.",
     "sunlight": "To'liq quyosh.",
-    "soil": "Chirindiga boy, nordonroq (pH 5.5-6.5) tuproq.",
+    "soil": "Chirindiga boy, yengil tuproq.",
     "season": "Aprel - Iyun",
     "commonDiseases": [
-      "Barg kuyishi",
-      "Kulrang chirish",
-      "O'rgimchakkana"
+      "barg-kuyishi",
+      "kulrang-chirish",
+      "un-shudring",
+      "orgimchakkana"
     ],
     "careTips": [
-      "Tagiga somon to'shang - meva toza va sog'lom bo'ladi.",
-      "Har 3 yilda yangi joyga ko'chiring.",
-      "Ortiqcha mo'ylovlarni kesib tashlang."
+      "Tagiga somon to'shang - meva toza bo'ladi va chirimaydi.",
+      "Ortiqcha mo'ylovlarni kesing, kuch mevaga ketsin.",
+      "Har 3 yilda yangi joyga ko'chiring."
     ]
   }
 ]

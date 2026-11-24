@@ -8,6 +8,17 @@ export interface Plant {
 export interface HealthPrediction {
   label: string;
   confidence: number;
+  /** Key into the backend's disease library. */
+  slug?: string;
+  alsoCalled?: string;
+  whatIsIt?: string;
+  /** How to recognise it on the plant. */
+  signs?: string[];
+  whyItHappens?: string;
+  /** What to do now. */
+  whatToDo?: string[];
+  /** How to avoid it next season. */
+  prevent?: string[];
 }
 
 export interface Health {

@@ -386,11 +386,55 @@ Corrections are shared across sessions on purpose - knowledge about plants,
 not personal data - and the stored vector cannot be turned back into a
 photo. `POST /api/scans/{id}/correct {"plantId": "..."}`.
 
+### What a diagnosis tells the farmer
+
+A label and a percentage are not advice. Every prediction now carries its
+entry from `backend/app/data/diseases.json`:
+
+| field | question it answers |
+| ----- | ------------------- |
+| `whatIsIt` | what is this thing |
+| `signs` | how do I recognise it on my plant |
+| `whyItHappens` | why did it show up |
+| `whatToDo` | what do I do today |
+| `prevent` | how do I avoid it next year |
+
+26 entries, covering every disease the model can name plus the common
+problems listed on each crop card. Up to **five** candidates are returned
+instead of three - on tomato the model has ten classes, and the fourth
+description is often the one a farmer recognises.
+
+**The advice is deliberately chemical-free.** It sticks to cultural practice
+- cut this, clear that, water differently, rotate next year - and defers
+spray choice to an agronomist, who can judge the crop, the dose and local
+rules. A test asserts no product names or doses appear anywhere in the
+library, because wrong pesticide advice is worse than none.
+
+### Language
+
+The plant and disease text is written for a farmer, not a botanist: short
+sentences, everyday words, no Latin in the prose. Tests enforce the two
+things that actually made the old text hard to read - a scientific name
+buried mid-sentence, and sentences over 160 characters.
+
+Compare the old tomato card with the new one:
+
+> *before* — "Pomidor - O'zbekistonda eng ko'p ekiladigan sabzavotlardan
+> biri. Issiqni yaxshi ko'radi va ochiq dalada ham, issiqxonada ham o'sadi."
+
+> *after* — "Pomidor - bog'da eng ko'p ekiladigan sabzavot. Issiqni va
+> quyoshni yaxshi ko'radi. Sovuqqa umuman chidamaydi, shuning uchun sovuq
+> o'tgandan keyin ekiladi."
+
 ### What it still cannot do
 
 - **Confident answers are now the norm, so wrong ones are louder.** The app
   names a plant in 23 of 24 photos. Where it is wrong it is wrong with
   conviction - the permanent disclaimer matters more than ever.
+- **The model can only ever name 19 distinct diseases**, and most crops have
+  one to three. Richer text does not widen what it can *detect*. A 50-class
+  model exists that adds wheat and rice, but swapping it needs the same
+  measured validation the current one got.
 - **Only the 22 curated crops are recognised from produce**, and only those
   can be chosen when correcting. A crate of something else should come back
   unnamed rather than forced into the nearest crop.
@@ -529,6 +573,7 @@ pomidorAI/
 │   │   ├── vision/            # the models themselves
 │   │   │   ├── crops.py       # the 22 curated crops, any view + view badge
 │   │   │   ├── memory.py      # learning from user corrections
+│   │   │   ├── guide.py       # the disease library lookup
 │   │   │   ├── plantnet.py    # species: 7806 plants
 │   │   │   ├── gates.py       # CLIP: is-a-plant / is-a-leaf
 │   │   │   ├── disease.py     # PlantVillage ViT + weak CLIP fallback

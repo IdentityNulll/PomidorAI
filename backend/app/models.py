@@ -15,6 +15,16 @@ class PlantResult(BaseModel):
 class HealthPrediction(BaseModel):
     label: str
     confidence: float
+    # The disease library entry, so the UI can explain the diagnosis rather
+    # than just naming it. Defaulted because scans saved before the library
+    # existed are replayed through this same model.
+    slug: str = ""
+    alsoCalled: str = ""
+    whatIsIt: str = ""
+    signs: list[str] = []
+    whyItHappens: str = ""
+    whatToDo: list[str] = []
+    prevent: list[str] = []
 
 
 class HealthResult(BaseModel):

@@ -1,0 +1,567 @@
+{
+  "_comment": "Disease library, keyed by slug. labels.py maps the model's English labels onto these slugs. Written in deliberately plain Uzbek - the reader is a farmer, not a biologist, so no Latin, no jargon. Advice is cultural practice only (cut, clear, water differently, rotate); no chemical names or doses, because getting those wrong is dangerous and an agronomist should choose them. MACHINE-WRITTEN, NOT YET CHECKED BY AN AGRONOMIST.",
+  "fitoftoroz": {
+    "name": "Fitoftoroz",
+    "alsoCalled": "kech kuyish",
+    "whatIsIt": "Zamburug' kasalligi. Salqin va nam havoda tez tarqaladi. Bir necha kun ichida butun tupni quritib yuborishi mumkin.",
+    "signs": [
+      "Bargda qo'ng'ir-qora, suvga botgandek dog'lar paydo bo'ladi",
+      "Dog' atrofi sarg'ayadi, ertalab pastida oq momiq ko'rinadi",
+      "Poya va mevada ham qattiq qo'ng'ir dog'lar chiqadi",
+      "Barglar quriydi, lekin to'kilmay osilib qoladi"
+    ],
+    "whyItHappens": "Uzoq davom etgan yomg'ir, tumanli tonglar yoki bargga tegib ketadigan sug'orish. Tuplar bir-biriga juda zich ekilgan bo'lsa, havo yurmaydi va kasallik kuchayadi.",
+    "whatToDo": [
+      "Kasallangan barg va mevalarni darhol uzib oling",
+      "Ularni dalaga tashlamang, uzoqroqqa olib chiqib yo'q qiling",
+      "Sug'orishni tagidan qiling, bargni ho'llamang",
+      "Dorilash kerak bo'lsa, agronom bilan maslahatlashing"
+    ],
+    "prevent": [
+      "Tuplar orasini keng qoldiring, shamol yursin",
+      "Ertalab sug'oring, kechqurun emas",
+      "Har yili bir joyga pomidor yoki kartoshka ekmang"
+    ]
+  },
+  "alternarioz": {
+    "name": "Alternarioz",
+    "alsoCalled": "erta kuyish",
+    "whatIsIt": "Zamburug' kasalligi. Odatda pastki, eski barglardan boshlanadi va asta yuqoriga ko'tariladi.",
+    "signs": [
+      "Pastki barglarda qo'ng'ir dog'lar, ichida nishon kabi halqalar bor",
+      "Dog' atrofi sariq rangga kiradi",
+      "Kasal barglar quriydi va to'kiladi",
+      "Tup pastdan yalang'ochlanib qoladi"
+    ],
+    "whyItHappens": "Issiq va nam havo. Oziq yetishmagan, kuchsiz tuplar tezroq kasallanadi.",
+    "whatToDo": [
+      "Pastki kasal barglarni kesib oling",
+      "Tagidagi to'kilgan barglarni yig'ib tashlang",
+      "Tupni oziqlantiring - kuchli tup kasallikka chidamli",
+      "Dori kerak bo'lsa agronomdan so'rang"
+    ],
+    "prevent": [
+      "Tagiga somon yoki pichan to'shang - tuproqdan sachragan suv bargga tegmasin",
+      "Almashlab ekish qiling",
+      "Hosildan keyin dalani tozalang"
+    ]
+  },
+  "septorioz": {
+    "name": "Septorioz",
+    "alsoCalled": "oq dog'lanish",
+    "whatIsIt": "Zamburug' kasalligi. Juda ko'p mayda dog' bilan bargni ishdan chiqaradi.",
+    "signs": [
+      "Bargda ko'plab mayda, dumaloq dog'lar",
+      "Dog' o'rtasi kulrang yoki oq, cheti qoramtir",
+      "Avval pastki barglarda chiqadi",
+      "Barg sarg'ayib to'kiladi"
+    ],
+    "whyItHappens": "Nam havo va bargning uzoq ho'l turishi. Kasallik qoldiqlarda qishlab qoladi.",
+    "whatToDo": [
+      "Kasal barglarni olib tashlang",
+      "Dalani begona o'tlardan tozalang",
+      "Bargni ho'llamay sug'oring"
+    ],
+    "prevent": [
+      "Kuzda o'simlik qoldiqlarini yig'ib yo'q qiling",
+      "Tuplar orasini keng qoldiring",
+      "Almashlab eking"
+    ]
+  },
+  "barg-mogori": {
+    "name": "Barg mog'ori",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Ko'proq issiqxonada, havo dim bo'lganda uchraydi.",
+    "signs": [
+      "Barg ustida xira sariq dog'lar",
+      "Shu dog'ning orqa tomonida kulrang-jigarrang mayin mog'or",
+      "Barg buraladi va quriydi"
+    ],
+    "whyItHappens": "Havo juda nam va yopiq. Issiqxona shamollatilmasa tez tarqaladi.",
+    "whatToDo": [
+      "Issiqxonani har kuni shamollating",
+      "Kasal barglarni olib tashlang",
+      "Tuplar orasini siyraklang"
+    ],
+    "prevent": [
+      "Issiqxonada namlik to'planishiga yo'l qo'ymang",
+      "Kechasi sug'ormang",
+      "Tupni pastdan tozalab turing"
+    ]
+  },
+  "bakterial-doglanish": {
+    "name": "Bakterial dog'lanish",
+    "alsoCalled": "",
+    "whatIsIt": "Bakteriya kasalligi. Yomg'ir va shamol bilan tez tarqaladi. Dori bilan davolash qiyin, shuning uchun oldini olish muhim.",
+    "signs": [
+      "Bargda mayda, suvga botgandek qoramtir dog'lar",
+      "Dog'lar quriydi, o'rtasi teshilib qolishi mumkin",
+      "Mevada qo'tirdek g'adir-budur dog'lar",
+      "Kasal barglar to'kiladi"
+    ],
+    "whyItHappens": "Iliq va yomg'irli havo. Ho'l paytda tup orasida ishlash ham kasallikni tarqatadi.",
+    "whatToDo": [
+      "Kasal tuplarni olib tashlang",
+      "Tup ho'l bo'lganda dala ichida ishlamang",
+      "Asboblarni tozalab turing"
+    ],
+    "prevent": [
+      "Sog'lom urug' va ko'chat ishlating",
+      "Bargga suv sepmang",
+      "Almashlab eking"
+    ]
+  },
+  "orgimchakkana": {
+    "name": "O'rgimchakkana",
+    "alsoCalled": "zararkunanda",
+    "whatIsIt": "Kasallik emas, juda mayda jonivor. Ko'zga arang ko'rinadi, bargning shirasini so'radi. Issiq va quruq havoda ko'payadi.",
+    "signs": [
+      "Bargda juda mayda sariq yoki oq nuqtalar",
+      "Barg xira tortadi, keyin sarg'ayadi",
+      "Barg ostida juda ingichka o'rgimchak to'ri",
+      "Qattiq zararlanganda tup quriydi"
+    ],
+    "whyItHappens": "Uzoq issiq va quruq kunlar. Changli, sug'orilmagan dalada tez ko'payadi.",
+    "whatToDo": [
+      "Barglarni ostidan suv bilan yuving - ko'pchiligi tushib ketadi",
+      "Qattiq zararlangan barglarni olib tashlang",
+      "Havo namligini oshiring",
+      "Preparat kerak bo'lsa agronomdan so'rang"
+    ],
+    "prevent": [
+      "Tupni quruq qoldirmang",
+      "Begona o'tlarni yo'qoting - kana o'sha yerda yashaydi",
+      "Barglarni vaqti-vaqti bilan tekshirib turing"
+    ]
+  },
+  "un-shudring": {
+    "name": "Un-shudring",
+    "alsoCalled": "oq kukun",
+    "whatIsIt": "Zamburug' kasalligi. Bargni un sepgandek oq qoplama bosadi.",
+    "signs": [
+      "Barg ustida oq, un kabi qoplama",
+      "Qo'l bilan artsa ketadi, keyin yana chiqadi",
+      "Barg buraladi, sarg'ayadi",
+      "Yosh novdalar o'sishdan qoladi"
+    ],
+    "whyItHappens": "Kunduzi issiq, kechasi salqin havo. Soyada va dim joyda kuchayadi.",
+    "whatToDo": [
+      "Kasal barg va novdalarni kesib oling",
+      "Tupni siyraklab, havo yurishini ta'minlang",
+      "Ortiqcha azotli o'g'it bermang"
+    ],
+    "prevent": [
+      "Quyoshli, shamol yuradigan joyga eking",
+      "Tuplarni zich ekmang",
+      "Kuzda qoldiqlarni tozalang"
+    ]
+  },
+  "qora-chirish": {
+    "name": "Qora chirish",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Meva ustida boshlanib, uni qurib qolgan qora donaga aylantiradi.",
+    "signs": [
+      "Mevada qo'ng'ir dog', asta kengayadi",
+      "Meva qorayib, burishib, quruq bo'lib qoladi",
+      "Shunday mevalar shoxda osilib turaveradi",
+      "Bargda ham mayda qo'ng'ir dog'lar"
+    ],
+    "whyItHappens": "Nam va iliq havo. Kasallik shoxda qolgan quruq mevalarda qishlaydi.",
+    "whatToDo": [
+      "Quruq, qoraygan mevalarni shoxdan uzib oling",
+      "Yerga to'kilganlarini ham yig'ing",
+      "Hammasini uzoqqa olib chiqib yo'q qiling"
+    ],
+    "prevent": [
+      "Qishda kesish qilib, shoxlarni siyraklang",
+      "Shoxda bitta ham quruq meva qoldirmang",
+      "Tagini toza tuting"
+    ]
+  },
+  "olma-qotiri": {
+    "name": "Olma qo'tiri",
+    "alsoCalled": "parsha",
+    "whatIsIt": "Zamburug' kasalligi. Olma va behining eng ko'p uchraydigan kasalligi. Meva yeyishga yaroqli, lekin ko'rinishi buziladi va saqlanmaydi.",
+    "signs": [
+      "Bargda zaytun rangli, keyin qoramtir dog'lar",
+      "Mevada qo'tirdek qo'ng'ir, qattiq dog'lar",
+      "Meva yorilib ketishi mumkin",
+      "Barglar erta to'kiladi"
+    ],
+    "whyItHappens": "Bahorgi yomg'irlar. Zamburug' yerga to'kilgan o'tgan yilgi barglarda qishlaydi.",
+    "whatToDo": [
+      "To'kilgan barglarni yig'ib, bog'dan chiqarib tashlang",
+      "Kasal shox va mevalarni kesib oling",
+      "Bahorda dorilash kerak bo'lsa agronom bilan maslahatlashing"
+    ],
+    "prevent": [
+      "Kuzda barglarni albatta yig'ing - eng muhim ish shu",
+      "Toj ichini kesib siyraklang, quyosh va shamol kirsin",
+      "Chidamli navlarni tanlang"
+    ]
+  },
+  "olma-zangi": {
+    "name": "Olma zangi",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Yaqin atrofda archa yoki kelin archa bo'lsa uchraydi - kasallik ikki daraxt o'rtasida aylanib yuradi.",
+    "signs": [
+      "Barg ustida yorqin sariq-to'q sariq dumaloq dog'lar",
+      "Dog' o'rtasida mayda qora nuqtalar",
+      "Barg ostida mayin o'simtalar chiqadi",
+      "Mevada ham sariq dog' bo'lishi mumkin"
+    ],
+    "whyItHappens": "Bahorgi nam havo va yaqinda archa turkumidagi daraxt borligi.",
+    "whatToDo": [
+      "Kasal barglarni yig'ib tashlang",
+      "Iloji bo'lsa yaqindagi archadagi shishsimon o'simtalarni kesing",
+      "Dorilash vaqtini agronom bilan belgilang"
+    ],
+    "prevent": [
+      "Olmani archadan uzoqroqqa eking",
+      "Chidamli nav tanlang",
+      "Bahorda barglarni kuzatib boring"
+    ]
+  },
+  "eska": {
+    "name": "Eska",
+    "alsoCalled": "qora o'lat",
+    "whatIsIt": "Uzumning og'ir kasalligi. Tokning ichidagi yog'ochni chiritadi. Ba'zan tok birdan, bir necha kunda qurib qoladi.",
+    "signs": [
+      "Bargda sariq yoki qizil yo'l-yo'l oraliqlar, tomirlar yashil qoladi",
+      "Barg qurib, chetidan kuygandek bo'ladi",
+      "Uzum donalari mayda qora nuqtalar bilan qoplanadi",
+      "Kesilgan tok ichida qo'ng'ir, chirigan yog'och ko'rinadi"
+    ],
+    "whyItHappens": "Zamburug' kesilgan joydagi yarasidan ichkariga kiradi. Katta yaralar eng xavfli.",
+    "whatToDo": [
+      "Kasal novdalarni sog'lom yerigacha kesing",
+      "Kesilgan qismlarni yoqib yuboring",
+      "Kesish asbobini har tokdan keyin tozalang"
+    ],
+    "prevent": [
+      "Kesishni quruq havoda qiling, yomg'irdan oldin emas",
+      "Katta yaralarni berkitib qo'ying",
+      "Juda keksa, kasal toklarni almashtiring"
+    ]
+  },
+  "barg-kuyishi": {
+    "name": "Barg kuyishi",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Barg chetidan boshlab kuygandek quriydi.",
+    "signs": [
+      "Barg chetida qo'ng'ir, quruq joylar",
+      "Dog'lar kengayib qo'shilib ketadi",
+      "Barg butunlay qurib to'kiladi",
+      "Hosil kichik va kam bo'ladi"
+    ],
+    "whyItHappens": "Nam havo va bargning uzoq ho'l turishi.",
+    "whatToDo": [
+      "Kasal barglarni olib tashlang",
+      "Tup tagini tozalang",
+      "Bargga suv tegmaydigan qilib sug'oring"
+    ],
+    "prevent": [
+      "Tuplar orasini keng qoldiring",
+      "Kuzda qoldiqlarni yig'ing",
+      "Almashlab eking"
+    ]
+  },
+  "serkosporoz": {
+    "name": "Serkosporoz",
+    "alsoCalled": "kulrang dog'",
+    "whatIsIt": "Zamburug' kasalligi. Makkajo'xorining bargini uzun kulrang dog'lar bilan qoplaydi.",
+    "signs": [
+      "Bargda uzun, to'g'ri burchakli kulrang dog'lar",
+      "Dog'lar barg tomirlari orasida cho'zilgan",
+      "Ko'payib, butun bargni qurituvchi bo'ladi"
+    ],
+    "whyItHappens": "Iliq, nam havo va dalada qolgan o'tgan yilgi poyalar.",
+    "whatToDo": [
+      "Kasal barglarni kuzating, tarqalishini nazorat qiling",
+      "Hosildan keyin poyalarni dalaga ko'mib yuboring",
+      "Keyingi yil boshqa ekin eking"
+    ],
+    "prevent": [
+      "Almashlab ekish",
+      "Chidamli nav tanlash",
+      "Dalani qoldiqlardan tozalash"
+    ]
+  },
+  "zang": {
+    "name": "Zang kasalligi",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Bargda zanglagan temir rangidagi kukunli dog'lar chiqadi. Qo'l tegsa, kukun yuqadi.",
+    "signs": [
+      "Bargda to'q sariq yoki qo'ng'ir kukunli pufakchalar",
+      "Qo'l bilan ushlasa kukun yuqadi",
+      "Barg sarg'ayib quriydi",
+      "Ko'p bo'lsa hosil kamayadi"
+    ],
+    "whyItHappens": "Salqin tunlar, iliq kunlar va shudring. Shamol kasallikni uzoqqa olib boradi.",
+    "whatToDo": [
+      "Kasal barglarni olib tashlang",
+      "Dalani kuzatib boring - tez tarqaladi",
+      "Keng tarqalsa agronom bilan maslahatlashing"
+    ],
+    "prevent": [
+      "Chidamli nav eking",
+      "Zich ekmang",
+      "Hosildan keyin qoldiqlarni yig'ing"
+    ]
+  },
+  "shimoliy-barg-kuyishi": {
+    "name": "Shimoliy barg kuyishi",
+    "alsoCalled": "",
+    "whatIsIt": "Makkajo'xori bargidagi zamburug' kasalligi. Uzun, sigaretga o'xshash kulrang dog'lar qoldiradi.",
+    "signs": [
+      "Bargda uzun, cho'zinchoq kulrang-yashil dog'lar",
+      "Dog'lar kattalashib qo'shiladi",
+      "Barg pastdan yuqoriga qarab quriydi"
+    ],
+    "whyItHappens": "Salqin va nam ob-havo, ayniqsa hosil tugish davrida.",
+    "whatToDo": [
+      "Dala holatini kuzating",
+      "Hosildan keyin poyalarni yerga ko'ming",
+      "Keyingi yil almashlab eking"
+    ],
+    "prevent": [
+      "Chidamli nav tanlang",
+      "Dalani qoldiqlardan tozalang",
+      "Juda zich ekmang"
+    ]
+  },
+  "sariq-barg-burishish": {
+    "name": "Sariq barg burishish virusi",
+    "alsoCalled": "",
+    "whatIsIt": "Virus kasalligi. Oq qanotli mayda hasharot (oq qanot) tarqatadi. Davosi yo'q - faqat oldini olish mumkin.",
+    "signs": [
+      "Yosh barglar kichkina bo'lib qoladi va yuqoriga buraladi",
+      "Barg chetlari sarg'ayadi",
+      "Tup o'sishdan to'xtaydi, pakana bo'lib qoladi",
+      "Gullar to'kiladi, meva tugmaydi"
+    ],
+    "whyItHappens": "Oq qanot hasharoti kasal tupdan sog'lomiga olib o'tadi.",
+    "whatToDo": [
+      "Kasal tupni butunlay olib tashlang - u tuzalmaydi",
+      "Boshqa tuplarga yuqmasligi uchun uzoqqa chiqarib yo'q qiling",
+      "Oq qanotga qarshi chora ko'ring, agronomdan so'rang"
+    ],
+    "prevent": [
+      "Sog'lom ko'chat oling",
+      "Issiqxona eshigiga mayda to'r tuting",
+      "Oq qanotni sariq yopishqoq tuzoq bilan kuzating"
+    ]
+  },
+  "mozaika": {
+    "name": "Tamaki mozaikasi virusi",
+    "alsoCalled": "mozaika",
+    "whatIsIt": "Virus kasalligi. Bargni ola-bula qiladi. Davosi yo'q, lekin qo'l va asbob orqali tarqalgani uchun tozalik bilan to'xtatish mumkin.",
+    "signs": [
+      "Bargda och va to'q yashil ola-bula naqsh",
+      "Barg burishadi, g'ijimlangandek bo'ladi",
+      "Tup sekin o'sadi",
+      "Meva kam va mayda"
+    ],
+    "whyItHappens": "Qo'l, kiyim va asboblar orqali yuqadi. Tamaki chekuvchining qo'lidan ham o'tadi.",
+    "whatToDo": [
+      "Kasal tupni olib tashlang",
+      "Qo'lingizni sovunlab yuving",
+      "Asboblarni tozalang"
+    ],
+    "prevent": [
+      "Ish oldidan qo'l yuving",
+      "Tup orasida chekmang",
+      "Sog'lom urug' ishlating"
+    ]
+  },
+  "nishonsimon-dog": {
+    "name": "Nishonsimon dog'",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Dog' ichida nishon kabi halqalar bo'ladi.",
+    "signs": [
+      "Bargda dumaloq qo'ng'ir dog'lar, ichida halqalar",
+      "Dog' o'rtasi yorilib teshilishi mumkin",
+      "Mevada ham botiq dog'lar",
+      "Barglar to'kiladi"
+    ],
+    "whyItHappens": "Issiq va nam havo, dim joy.",
+    "whatToDo": [
+      "Kasal barg va mevalarni olib tashlang",
+      "Havo yurishini yaxshilang",
+      "Bargni ho'llamang"
+    ],
+    "prevent": [
+      "Tuplarni siyrak eking",
+      "Tagini tozalab turing",
+      "Almashlab eking"
+    ]
+  },
+  "sitrus-kokarishi": {
+    "name": "Sitrus ko'karishi",
+    "alsoCalled": "HLB",
+    "whatIsIt": "Juda og'ir bakterial kasallik. Mayda hasharot tarqatadi. Davosi yo'q, daraxt asta nobud bo'ladi.",
+    "signs": [
+      "Barglar notekis sarg'ayadi - bir tomoni sariq, bir tomoni yashil",
+      "Mevalar kichik, qiyshiq va achchiq",
+      "Meva pishmay to'kiladi",
+      "Shoxlar asta-sekin quriydi"
+    ],
+    "whyItHappens": "Kasallikni mayda shiracha hasharoti tarqatadi.",
+    "whatToDo": [
+      "Kasal daraxtni olib tashlang - u tuzalmaydi",
+      "Boshqa daraxtlarga yuqmasligi uchun tezda harakat qiling",
+      "Albatta agronomga murojaat qiling"
+    ],
+    "prevent": [
+      "Faqat tekshirilgan ko'chat oling",
+      "Hasharotlarni nazorat qiling",
+      "Bog'ni muntazam tekshirib turing"
+    ]
+  },
+  "monilioz": {
+    "name": "Monilioz",
+    "alsoCalled": "meva chirishi",
+    "whatIsIt": "Zamburug' kasalligi. Gul va mevani chiritadi, shoxni quritadi.",
+    "signs": [
+      "Gullar birdan qorayib quriydi",
+      "Shox uchlari kuygandek bo'ladi",
+      "Mevada qo'ng'ir chirish, ustida kulrang yostiqchalar",
+      "Chirigan meva shoxda qotib qoladi"
+    ],
+    "whyItHappens": "Gullash vaqtidagi yomg'ir va salqin havo.",
+    "whatToDo": [
+      "Qurigan shox uchlarini sog'lom yerigacha kesing",
+      "Chirigan mevalarni shoxdan va yerdan yig'ing",
+      "Hammasini bog'dan chiqarib tashlang"
+    ],
+    "prevent": [
+      "Qishda kesish qilib tojni siyraklang",
+      "Shoxda bitta ham chirigan meva qoldirmang",
+      "Gullash oldidan agronom bilan maslahatlashing"
+    ]
+  },
+  "mildyu": {
+    "name": "Mildyu",
+    "alsoCalled": "soxta un-shudring",
+    "whatIsIt": "Zamburug' kasalligi. Uzum va bodringning asosiy kasalligi. Nam yilda juda tez tarqaladi.",
+    "signs": [
+      "Barg ustida moysimon sariq dog'lar",
+      "Shu dog'ning ostida oq momiq qoplama",
+      "Dog'lar qo'ng'ir tortib quriydi",
+      "Yosh uzum donalari qoraya boshlaydi"
+    ],
+    "whyItHappens": "Iliq yomg'irli havo va bargning ho'l turishi.",
+    "whatToDo": [
+      "Kasal barglarni olib tashlang",
+      "Tupni siyraklab havo kiriting",
+      "Dorilash vaqtini agronom belgilasin"
+    ],
+    "prevent": [
+      "Tokni tayanchga ko'taring, yerga tegmasin",
+      "Ertalab sug'oring",
+      "Qalin o'sgan barglarni siyraklang"
+    ]
+  },
+  "ildiz-chirishi": {
+    "name": "Ildiz chirishi",
+    "alsoCalled": "",
+    "whatIsIt": "Ildiz suvda bo'g'ilib chiriydi. Ko'pincha kasallik emas, ortiqcha suvdan bo'ladi.",
+    "signs": [
+      "Tup sababsiz so'liydi, sug'orsa ham tiklanmaydi",
+      "Pastki barglar sarg'ayadi",
+      "Ildiz qo'ng'ir, yumshoq va sassiq",
+      "Tup tortsa osongina chiqib keladi"
+    ],
+    "whyItHappens": "Ortiqcha sug'orish va suv turib qoladigan og'ir tuproq.",
+    "whatToDo": [
+      "Sug'orishni to'xtating, tuproq qurisin",
+      "Kasal tupni olib tashlang",
+      "Tuproqni yumshating"
+    ],
+    "prevent": [
+      "Suv o'tadigan tuproqqa eking",
+      "Pushta qilib eking",
+      "Tuproq ustki qatlami qurigandan keyin sug'oring"
+    ]
+  },
+  "kulrang-chirish": {
+    "name": "Kulrang chirish",
+    "alsoCalled": "",
+    "whatIsIt": "Zamburug' kasalligi. Mevani kulrang momiq bosadi, ayniqsa saqlashda.",
+    "signs": [
+      "Mevada yumshoq qo'ng'ir chirish",
+      "Ustida kulrang, changsimon momiq",
+      "Tegsa chang ko'tariladi",
+      "Tez qo'shni mevalarga o'tadi"
+    ],
+    "whyItHappens": "Nam va salqin havo, yopiq joy, mevaning yerga tegishi.",
+    "whatToDo": [
+      "Chirigan mevalarni darhol olib tashlang",
+      "Havo yurishini yaxshilang",
+      "Mevani yerga tegizmang"
+    ],
+    "prevent": [
+      "Tagiga somon to'shang",
+      "Hosilni quruq paytda yig'ing",
+      "Saqlash joyini shamollating"
+    ]
+  },
+  "bitlar": {
+    "name": "Bitlar",
+    "alsoCalled": "shira",
+    "whatIsIt": "Kasallik emas, mayda yumshoq hasharotlar. To'da bo'lib yosh novda va barg ostida o'tiradi, shira so'radi.",
+    "signs": [
+      "Yosh novda uchida mayda yashil yoki qora hasharotlar to'dasi",
+      "Barg buraladi va yopishqoq bo'ladi",
+      "Yopishqoq joyda chumolilar yuradi",
+      "Keyinchalik qora kuya bosadi"
+    ],
+    "whyItHappens": "Iliq bahor va ortiqcha azotli o'g'it - yumshoq yosh novda bitga yoqadi.",
+    "whatToDo": [
+      "Kuchli suv oqimi bilan yuvib tushiring",
+      "Qattiq bosgan novda uchlarini kesing",
+      "Xonqizi kabi foydali hasharotlarni asrang"
+    ],
+    "prevent": [
+      "Ortiqcha azot bermang",
+      "Novdalarni muntazam ko'rib turing",
+      "Chumoli uyalarini yo'qoting"
+    ]
+  },
+  "noaniq": {
+    "name": "Aniq emas",
+    "alsoCalled": "",
+    "whatIsIt": "Rasmdan kasallikni aniq ayta olmadik. Bu kasallik yo'q degani emas - shunchaki ishonch yetarli emas.",
+    "signs": [
+      "Aniqroq javob uchun bitta kasal bargni yaqindan suratga oling",
+      "Barg to'liq kadrga sig'sin, fon sodda bo'lsin",
+      "Yorug' joyda, soyada emas"
+    ],
+    "whyItHappens": "",
+    "whatToDo": [
+      "Bitta bargni yaqindan olib qayta urinib ko'ring",
+      "Shubha bo'lsa agronomga ko'rsating"
+    ],
+    "prevent": []
+  },
+  "soglom": {
+    "name": "Sog'lom",
+    "alsoCalled": "",
+    "whatIsIt": "Rasmda kasallik belgisi ko'rinmadi. O'simlik sog'lom ko'rinyapti.",
+    "signs": [
+      "Barg rangi bir tekis yashil",
+      "Dog', sarg'ayish yoki quruq joy yo'q",
+      "Barg shakli normal, burishmagan"
+    ],
+    "whyItHappens": "",
+    "whatToDo": [
+      "Hozircha davolash shart emas",
+      "Haftada bir marta barglarni ko'rib turing"
+    ],
+    "prevent": [
+      "Bir tekis sug'oring",
+      "Tuplar orasida havo yursin",
+      "Begona o'tlarni olib turing"
+    ]
+  }
+}

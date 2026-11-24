@@ -4,6 +4,7 @@ import { uz } from '../i18n/uz';
 import type { ScanDetail } from '../types';
 import { Card, ConfidenceBar, SectionTitle } from './ui';
 import { CorrectSheet } from './CorrectSheet';
+import { DiseaseGuide } from './DiseaseGuide';
 import { CONFIDENCE_FLOOR } from '../lib/confidence';
 
 /**
@@ -116,16 +117,35 @@ export function ResultView({
       <Card className="space-y-4">
         <SectionTitle>{uz.resultHealthTitle}</SectionTitle>
         {healthSure ? (
-          <div className="space-y-3.5">
-            {predictions.slice(0, 3).map((prediction, index) => (
-              <ConfidenceBar
-                key={prediction.label}
-                label={prediction.label}
-                value={prediction.confidence}
-                emphasis={index === 0}
-              />
-            ))}
-          </div>
+          <>
+            <ConfidenceBar
+              label={predictions[0].label}
+              value={predictions[0].confidence}
+              emphasis
+            />
+            {/* The top result gets the full guide; the rest are listed so a
+                farmer who recognises a different description can read it. */}
+            <DiseaseGuide prediction={predictions[0]} />
+
+            {predictions.length > 1 && (
+              <details className="group">
+                <summary className="flex min-h-[44px] cursor-pointer list-none items-center text-base font-semibold text-leaf-700 dark:text-leaf-300">
+                  {uz.diseaseOthers}
+                </summary>
+                <div className="mt-3 space-y-4">
+                  {predictions.slice(1).map((prediction) => (
+                    <div key={prediction.slug ?? prediction.label} className="space-y-2">
+                      <ConfidenceBar
+                        label={prediction.label}
+                        value={prediction.confidence}
+                      />
+                      <DiseaseGuide prediction={prediction} />
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+          </>
         ) : (
           <Unsure />
         )}

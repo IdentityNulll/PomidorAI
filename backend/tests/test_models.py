@@ -31,17 +31,17 @@ def test_models_load(loaded):
     assert len(loaded.disease_labels) == 38
 
 
-def test_disease_labels_are_all_translated(loaded):
-    """Every covered label needs an Uzbek name, or the UI shows English."""
-    from app.vision.labels import CROP_BY_PLANT_ID, DISEASE_UZ
+def test_every_label_the_model_emits_has_a_library_entry(loaded):
+    """A label with no entry would surface to the farmer as a raw slug."""
+    from app.vision.guide import known_slugs
+    from app.vision.labels import DISEASE_SLUG
 
-    covered = set(CROP_BY_PLANT_ID.values())
-    missing = [
-        label
-        for label in loaded.disease_labels.values()
-        if label.split("___")[0] in covered and label not in DISEASE_UZ
-    ]
-    assert missing == []
+    library = known_slugs()
+    unmapped = sorted(l for l in loaded.disease_labels.values() if l not in DISEASE_SLUG)
+    assert unmapped == [], f"labels with no slug: {unmapped}"
+
+    missing = sorted({s for s in DISEASE_SLUG.values() if s not in library})
+    assert missing == [], f"slugs with no library entry: {missing}"
 
 
 def test_analyze_returns_the_contract_on_a_real_image(tmp_path):
@@ -54,7 +54,7 @@ def test_analyze_returns_the_contract_on_a_real_image(tmp_path):
 
     assert set(result) == {"view", "plant", "health", "info"}
     assert 0.0 <= result["plant"]["confidence"] <= 1.0
-    assert 1 <= len(result["health"]["predictions"]) <= 3
+    assert 1 <= len(result["health"]["predictions"]) <= 5
 
 
 def test_analyze_works_off_the_thread_that_loaded_the_models(tmp_path):

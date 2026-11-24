@@ -47,6 +47,7 @@ from .vision import plantnet
 from .vision import thresholds
 from .vision import gates as clip_gate
 from .vision import crops
+from .vision import guide
 from .vision import memory
 
 logger = logging.getLogger(__name__)
@@ -200,9 +201,13 @@ def _resolve(scientific: str) -> tuple[str, str, dict]:
     """(plant_id, Uzbek display name, info card) for a scientific name."""
     curated = names.curated(scientific)
     if curated:
-        return curated["id"], curated["commonName"], {
-            key: curated[key] for key in EMPTY_INFO
-        }
+        info = {key: curated[key] for key in EMPTY_INFO}
+        # plants.json stores disease library slugs; the card shows names.
+        info["commonDiseases"] = [
+            (guide.lookup(slug) or {}).get("name", slug)
+            for slug in curated["commonDiseases"]
+        ]
+        return curated["id"], curated["commonName"], info
 
     uz = names.uzbek_name(scientific)
     info = dict(EMPTY_INFO)
@@ -225,7 +230,7 @@ def _assess(image, plant_id: str, confidence: float, reading, is_leaf: bool,
         predictions = disease_model.clip_fallback(image, plant_id, scientific)
     else:
         # No disease model and no prompts we trust for an arbitrary species.
-        predictions = [{"label": disease_model.HEALTHY, "confidence": UNSURE_CAP}]
+        predictions = [guide.describe_disease("noaniq", UNSURE_CAP)]
 
     if (covered and not is_leaf) or confidence < UNSURE_BELOW or plant_id == "wild":
         return disease_model.unsure(predictions)
@@ -241,6 +246,6 @@ def _unidentified() -> dict:
     return {
         "view": "",
         "plant": {"id": "unknown", "commonName": "", "scientificName": "", "confidence": 0.0},
-        "health": {"predictions": [{"label": disease_model.HEALTHY, "confidence": 0.0}]},
+        "health": {"predictions": [guide.describe_disease("noaniq", 0.0)]},
         "info": dict(EMPTY_INFO),
     }
