@@ -451,6 +451,49 @@ Compare the old tomato card with the new one:
   set. Treat output as a prompt to look closer - which is what the permanent
   disclaimer says.
 
+### A bigger disease model, evaluated and rejected
+
+`ripro805/krishidrishti-plant-disease` has 50 classes instead of 38, adding
+wheat (Septoria, Stripe Rust) and rice. Wheat is one of the eight core crops
+and currently has no disease detection at all, so it looked worth having.
+It was tested and **not adopted**. Recording why, so the work is not redone.
+
+**It collapses on the crops that already work.** Top-1 crop identification
+over 100 real photos from `data/dataset/`:
+
+| crop | current (PlantVillage ViT) | candidate (50-class) |
+| ---- | -------------------------- | -------------------- |
+| tomato | **84%** | 4% |
+| grape | **32%** | 4% |
+| apple | 4% | 0% |
+| potato | 0% | 0% |
+
+Both models are being shown the same out-of-distribution photos - whole
+plants and fruit rather than the isolated leaves they trained on - so this
+is a fair comparison. The current model degrades; the candidate collapses.
+
+**And it fails at the thing it was wanted for.** On a real photo of wheat
+leaf rust it answered *Corn Cercospora leaf spot* at 0.34, with
+*Wheat_Stripe_Rust* third at 0.11. Across 20 real wheat photos it recognised
+wheat as wheat in only 10. Wheat and maize are both grasses, so the
+confusion is understandable - but it is still the failure case.
+
+On isolated-leaf photos it was genuinely mixed, not bad: it fixed potato
+late blight (0.97, where the current model says *tomato* late blight) and
+grape black rot, but weakened a correct tomato late blight call from 0.97 to
+0.28.
+
+Three further reasons for caution: the repo declares **no license**; the
+author's README states their 98.9% figure comes from "validation (also used
+for checkpoint selection and early stopping - NOT a test set)"; and the
+wheat classes were trained on roughly 345 images total, with a reported
+`Wheat_Healthy` recall of **0.60** - it would call four healthy wheat fields
+in ten diseased.
+
+Wheat disease detection is still worth having. It needs a model trained
+properly for it, or a few hundred labelled wheat photos and a head of our
+own - not this swap.
+
 ### Swapping in different models
 
 The seam is unchanged. `analyze()` takes an absolute path to a normalised
